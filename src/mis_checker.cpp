@@ -15,10 +15,10 @@ std::string MISChecker::check_mis(const Graph &g, const NodeList &mis) const {
             }
         }
 
-        if (mis_set.count(node) && son_in_mis < n)
-            return std::format("MIS incorrect! {} and {} are adjacent!", node, son_in_mis);
-
-        if (!son_in_mis)
+        if (mis_set.count(node)) {
+            if (son_in_mis < n)
+                return std::format("MIS incorrect! {} and {} are adjacent!", node, son_in_mis);
+        } else if (son_in_mis == n)
             return std::format("MIS not maximal! {} can be added!", node);
     }
 

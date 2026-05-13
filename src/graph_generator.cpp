@@ -12,8 +12,10 @@ Graph GraphGenerator::generate_uniform(std::size_t n) {
 
     for (std::size_t i = 0; i < n; i++) {
         for (std::size_t j = i + 1; j < n; j++) {
-            if (dist(gen))
+            if (dist(gen)) {
                 g[i].push_back(j);
+                g[j].push_back(i);
+            }
         }
     }
 

@@ -1,5 +1,5 @@
-CXX = clang++
-CXXFLAGS = -Wall -Wextra -std=c++20 -O3
+CXX = g++
+CXXFLAGS = -Wall -Wextra -std=c++20 -O3 -fopenmp
 
 # Define our directories
 SRC_DIR = src
