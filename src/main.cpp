@@ -9,7 +9,7 @@ int main() {
     MISChecker checker;
 
     const auto g = generator.generate_uniform(10);
-    MIS<Device::CPU> solver(g);
+    MIS<Algorithm::Sequential> solver(g);
     const auto mis = solver.find();
 
     const auto msg = checker.check_mis(g, mis);

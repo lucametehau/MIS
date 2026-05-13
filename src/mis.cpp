@@ -2,7 +2,7 @@
 #include <set>
 
 template<>
-NodeList MIS<Device::CPU>::find() {
+NodeList MIS<Algorithm::Sequential>::find() {
     NodeList mis;
     std::set<uint32_t> nodes_set;
     const auto n = g_.size();
@@ -25,6 +25,6 @@ NodeList MIS<Device::CPU>::find() {
 }
 
 template<>
-NodeList MIS<Device::GPU>::find() {
+NodeList MIS<Algorithm::Luby>::find() {
     return NodeList{};
 }

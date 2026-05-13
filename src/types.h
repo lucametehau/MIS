@@ -3,11 +3,6 @@
 #include <iostream>
 #include <cstdint>
 
-// devices we will use for our analysis
-enum class Device {
-    CPU, GPU
-};
-
 using NodeList = std::vector<uint32_t>;
 using Graph = std::vector<NodeList>;
 

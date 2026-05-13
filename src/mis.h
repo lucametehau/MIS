@@ -1,7 +1,12 @@
 #pragma once
 #include "types.h"
 
-template<Device d>
+// algorithms we will use for our MIS solver
+enum class Algorithm {
+    Sequential, Luby
+};
+
+template<Algorithm Algo>
 class MIS {
 public:
     MIS() = delete;
