@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <vector>
+#include <numeric>
 #include <omp.h>
 
 template<>
@@ -96,6 +97,93 @@ NodeList MIS<Algorithm::Luby>::find() {
                 any_active = true;
             }
         }
+    }
+
+    return mis;
+}
+
+template<>
+NodeList MIS<Algorithm::LubyImproved>::find() {
+    const auto n = g_.size();
+    if (n == 0) return {};
+
+    std::vector<uint8_t> is_active(n, 1);
+    std::vector<double> priorities(n, 0.0);
+    
+    std::vector<uint32_t> active_nodes(n);
+    std::iota(active_nodes.begin(), active_nodes.end(), 0);
+
+    NodeList mis;
+
+    while (!active_nodes.empty()) {
+        const size_t num_active = active_nodes.size();
+
+        #pragma omp parallel
+        {
+            static thread_local std::mt19937 gen(std::random_device{}());
+            std::uniform_real_distribution<double> dist(0.0, 1.0);
+            #pragma omp for schedule(static)
+            for (std::size_t i = 0; i < num_active; i++) {
+                priorities[active_nodes[i]] = dist(gen);
+            }
+        }
+
+        std::vector<uint32_t> newly_added;
+        #pragma omp parallel
+        {
+            std::vector<uint32_t> local_newly_added;
+            #pragma omp for schedule(dynamic, 32)
+            for (std::size_t i = 0; i < num_active; i++) {
+                auto node = active_nodes[i];
+                bool is_max = true;
+                for (auto son : g_[node]) {
+                    if (is_active[son]) {
+                        if (priorities[son] > priorities[node] || (priorities[son] == priorities[node] && son > node)) {
+                            is_max = false;
+                            break;
+                        }
+                    }
+                }
+                if (is_max)
+                    local_newly_added.push_back(node);
+            }
+            #pragma omp critical
+            {
+                newly_added.insert(newly_added.end(), local_newly_added.begin(), local_newly_added.end());
+            }
+        }
+
+        #pragma omp parallel for schedule(dynamic, 32)
+        for (std::size_t i = 0; i < newly_added.size(); i++) {
+            uint32_t node = newly_added[i];
+            is_active[node] = 0;
+            for (auto son : g_[node]) {
+                is_active[son] = 0;
+            }
+        }
+
+        #pragma omp critical
+        {
+            mis.insert(mis.end(), newly_added.begin(), newly_added.end());
+        }
+
+        std::vector<uint32_t> next_active_nodes;
+        #pragma omp parallel
+        {
+            std::vector<uint32_t> local_next;
+            #pragma omp for schedule(static)
+            for (std::size_t i = 0; i < num_active; i++) {
+                uint32_t u = active_nodes[i];
+                if (is_active[u]) {
+                    local_next.push_back(u);
+                }
+            }
+            #pragma omp critical
+            {
+                next_active_nodes.insert(next_active_nodes.end(), local_next.begin(), local_next.end());
+            }
+        }
+        active_nodes = std::move(next_active_nodes);
     }
 
     return mis;

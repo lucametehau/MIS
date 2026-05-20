@@ -3,7 +3,7 @@
 
 // algorithms we will use for our MIS solver
 enum class Algorithm {
-    Sequential, Luby
+    Sequential, Luby, LubyImproved
 };
 
 template<Algorithm Algo>
