@@ -92,7 +92,7 @@ NodeList MIS<Algorithm::Luby>::find() {
 
         any_active = false;
         #pragma omp parallel for reduction(||:any_active)
-        for (std::size_t i = 0; i < n; ++i) {
+        for (std::size_t i = 0; i < n; i++) {
             if (is_active[i]) {
                 any_active = true;
             }
