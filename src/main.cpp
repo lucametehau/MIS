@@ -6,7 +6,7 @@
 
 int main() {
     GraphGenerator generator;
-    Benchmarker bench(3);
+    Benchmarker bench(5);
 
     bench.add_algorithm("Sequential", [](const Graph& g) {
         MIS<Algorithm::Sequential> solver(g);
@@ -23,7 +23,7 @@ int main() {
         return solver.find();
     });
 
-    const std::size_t n = 500000;
+    const std::size_t n = 1000000;
     
     std::cout << "Generating Uniform Sparse Graph (n=" << n << ", p=0.0004)...\n";
     const auto g_uniform = generator.generate_sparse_uniform(n, 0.0004);
