@@ -16,4 +16,14 @@ public:
     // m0: initial number of nodes (fully connected)
     // m: number of edges to attach from a new node to existing nodes
     Graph generate_scale_free(std::size_t n, std::size_t m0, std::size_t m);
+
+    GraphCSR generate_uniform_csr(std::size_t n, double p);
+
+    GraphCSR generate_sparse_uniform_csr(std::size_t n, double p);
+
+    GraphCSR generate_scale_free_csr(
+        std::size_t n,
+        std::size_t m0,
+        std::size_t m
+    );
 };

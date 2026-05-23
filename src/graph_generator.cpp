@@ -100,3 +100,25 @@ Graph GraphGenerator::generate_scale_free(std::size_t n, std::size_t m0, std::si
 
     return g;
 }
+
+GraphCSR GraphGenerator::generate_uniform_csr(
+    std::size_t n,
+    double p)
+{
+    return GraphCSR(generate_uniform(n, p));
+}
+
+GraphCSR GraphGenerator::generate_sparse_uniform_csr(
+    std::size_t n,
+    double p)
+{
+    return GraphCSR(generate_sparse_uniform(n, p));
+}
+
+GraphCSR GraphGenerator::generate_scale_free_csr(
+    std::size_t n,
+    std::size_t m0,
+    std::size_t m)
+{
+    return GraphCSR(generate_scale_free(n, m0, m));
+}
