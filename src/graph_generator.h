@@ -1,9 +1,10 @@
 #pragma once
 #include "types.h"
+#include <random>
 
 class GraphGenerator {
 public:
-    GraphGenerator() = default;
+    GraphGenerator(uint32_t seed = 42);
 
     // O(N^2) complexity - standard Erdős-Rényi G(n, p)
     Graph generate_uniform(std::size_t n, double p = 0.5);
@@ -26,4 +27,6 @@ public:
         std::size_t m0,
         std::size_t m
     );
+private:
+    std::mt19937 gen_;
 };

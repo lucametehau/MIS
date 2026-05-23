@@ -5,7 +5,7 @@
 #include "benchmark.h"
 
 int main() {
-    GraphGenerator generator;
+    GraphGenerator generator(42);
     Benchmarker<GraphCSR> bench(5);
 
     bench.add_algorithm("Sequential_csr", [](const GraphCSR& g) {
@@ -32,6 +32,7 @@ int main() {
 
     bench.print_results();
 
+    GraphGenerator generator2(42);
     
     Benchmarker<Graph> bench2(5);
 
@@ -48,11 +49,11 @@ int main() {
     });
     
     std::cout << "Generating Uniform Sparse Graph (n=" << n << ", p=0.0004)...\n";
-    const auto g_uniform = generator.generate_sparse_uniform(n, 0.0004);
+    const auto g_uniform = generator2.generate_sparse_uniform(n, 0.0004);
     bench2.run("Uniform Sparse", g_uniform);
 
     std::cout << "\nGenerating Scale-Free Graph (n=" << n << ", m0=10, m=5)...\n";
-    const auto g_scale_free = generator.generate_scale_free(n, 10, 5);
+    const auto g_scale_free = generator2.generate_scale_free(n, 10, 5);
     bench2.run("Scale-Free", g_scale_free);
 
     bench2.print_results();
