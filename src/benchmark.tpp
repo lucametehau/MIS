@@ -1,3 +1,4 @@
+#pragma once
 #include "benchmark.h"
 #include "mis_checker.h"
 #include <chrono>
@@ -5,13 +6,16 @@
 #include <iomanip>
 #include <numeric>
 
-Benchmarker::Benchmarker(int num_runs) : num_runs_(num_runs) {}
+template<typename GraphT>
+Benchmarker<GraphT>::Benchmarker(int num_runs) : num_runs_(num_runs) {}
 
-void Benchmarker::add_algorithm(const std::string& name, SolverFunc solver) {
+template<typename GraphT>
+void Benchmarker<GraphT>::add_algorithm(const std::string& name, SolverFunc solver) {
     algorithms_.push_back({name, solver});
 }
 
-void Benchmarker::run(const std::string& graph_name, const Graph& g) {
+template<typename GraphT>
+void Benchmarker<GraphT>::run(const std::string& graph_name, const GraphT& g) {
     MISChecker checker;
     for (const auto& algo : algorithms_) {
         std::vector<double> times;
@@ -25,8 +29,10 @@ void Benchmarker::run(const std::string& graph_name, const Graph& g) {
             
             times.push_back(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0);
             
-            if (checker.check_mis(g, last_mis) != "MIS correct!") {
-                all_correct = false;
+            if constexpr (std::is_same_v<GraphT, Graph>) {
+                 if (checker.check_mis(g, last_mis) != "MIS correct!") {
+                    all_correct = false;
+                }
             }
         }
 
@@ -35,7 +41,8 @@ void Benchmarker::run(const std::string& graph_name, const Graph& g) {
     }
 }
 
-void Benchmarker::print_results() const {
+template<typename GraphT>
+void Benchmarker<GraphT>::print_results() const {
     if (results_.empty()) return;
 
     std::cout << "\n" << std::setfill('=') << std::setw(85) << "" << std::setfill(' ') << "\n";

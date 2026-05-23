@@ -12,14 +12,15 @@ struct BenchmarkResult {
     std::size_t mis_size;
 };
 
+template<typename GraphT>
 class Benchmarker {
 public:
-    using SolverFunc = std::function<NodeList(const Graph&)>;
+    using SolverFunc = std::function<NodeList(const GraphT&)>;
 
     Benchmarker(int num_runs = 5);
 
     void add_algorithm(const std::string& name, SolverFunc solver);
-    void run(const std::string& graph_name, const Graph& g);
+    void run(const std::string& graph_name, const GraphT& g);
     void print_results() const;
 
 private:
@@ -31,3 +32,5 @@ private:
     std::vector<AlgoInfo> algorithms_;
     std::vector<BenchmarkResult> results_;
 };
+
+#include "benchmark.tpp"

@@ -1,19 +1,35 @@
 #pragma once
-#include "types.h"
+#include "mis_algos.h"
 
-// algorithms we will use for our MIS solver
 enum class Algorithm {
-    Sequential, Luby, LubyImproved
+    Sequential,
+    Luby,
+    LubyImproved
 };
 
-template<Algorithm Algo>
-class MIS {
+template<typename GraphT>
+class MISSolver {
 public:
-    MIS() = delete;
-    MIS(const Graph &g) : g_(g) {}
+    MISSolver() = delete;
 
-    NodeList find();
+    explicit MISSolver(const GraphT& g)
+        : g_(g) {}
+
+    NodeList find(Algorithm algo) {
+        switch (algo) {
+            case Algorithm::Sequential:
+                return sequential_mis(g_);
+
+            case Algorithm::Luby:
+                return luby_mis(g_);
+
+            case Algorithm::LubyImproved:
+                return luby_improved_mis(g_);
+        }
+
+        return {};
+    }
 
 private:
-    Graph g_;
+    const GraphT& g_;
 };

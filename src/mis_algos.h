@@ -1,4 +1,6 @@
-#include "mis.h"
+#pragma once
+#include "types.h"
+
 #include <set>
 #include <random>
 #include <algorithm>
@@ -7,11 +9,11 @@
 #include <numeric>
 #include <omp.h>
 
-template<>
-NodeList MIS<Algorithm::Sequential>::find() {
+template <typename GraphT>
+NodeList sequential_mis(const GraphT& g) {
     NodeList mis;
     std::set<uint32_t> nodes_set;
-    const auto n = g_.size();
+    const auto n = g.size();
 
     for (std::size_t i = 0; i < n; i++)
         nodes_set.insert(i);
@@ -22,7 +24,7 @@ NodeList MIS<Algorithm::Sequential>::find() {
         nodes_set.erase(it);
         mis.push_back(node);
 
-        for (auto &son : g_[node]) {
+        for (auto &son : g[node]) {
             nodes_set.erase(son);
         }
     }
@@ -30,9 +32,9 @@ NodeList MIS<Algorithm::Sequential>::find() {
     return mis;
 }
 
-template<>
-NodeList MIS<Algorithm::Luby>::find() {
-    const auto n = g_.size();
+template <typename GraphT>
+NodeList luby_mis(const GraphT& g) {
+    const auto n = g.size();
     if (n == 0) return {};
 
     std::vector<uint8_t> is_active(n, 1); // not bool!!!
@@ -64,7 +66,7 @@ NodeList MIS<Algorithm::Luby>::find() {
                     continue;
 
                 bool is_max = true;
-                for (auto son : g_[node]) {
+                for (auto son : g[node]) {
                     if (is_active[son]) {
                         if (priorities[son] > priorities[node] || (priorities[son] == priorities[node] && son > node)) {
                             is_max = false;
@@ -85,7 +87,7 @@ NodeList MIS<Algorithm::Luby>::find() {
         for (auto node : newly_added) {
             mis.push_back(node);
             is_active[node] = 0;
-            for (auto son : g_[node]) {
+            for (auto son : g[node]) {
                 is_active[son] = 0;
             }
         }
@@ -102,9 +104,9 @@ NodeList MIS<Algorithm::Luby>::find() {
     return mis;
 }
 
-template<>
-NodeList MIS<Algorithm::LubyImproved>::find() {
-    const auto n = g_.size();
+template <typename GraphT>
+NodeList luby_improved_mis(const GraphT& g) {
+    const auto n = g.size();
     if (n == 0) return {};
 
     std::vector<uint8_t> is_active(n, 1);
@@ -136,7 +138,7 @@ NodeList MIS<Algorithm::LubyImproved>::find() {
             for (std::size_t i = 0; i < num_active; i++) {
                 auto node = active_nodes[i];
                 bool is_max = true;
-                for (auto son : g_[node]) {
+                for (auto son : g[node]) {
                     if (is_active[son]) {
                         if (priorities[son] > priorities[node] || (priorities[son] == priorities[node] && son > node)) {
                             is_max = false;
@@ -157,7 +159,7 @@ NodeList MIS<Algorithm::LubyImproved>::find() {
         for (std::size_t i = 0; i < newly_added.size(); i++) {
             uint32_t node = newly_added[i];
             is_active[node] = 0;
-            for (auto son : g_[node]) {
+            for (auto son : g[node]) {
                 is_active[son] = 0;
             }
         }
