@@ -29,4 +29,5 @@ public:
     );
 private:
     std::mt19937 gen_;
+    uint32_t seed_;
 };

@@ -23,7 +23,14 @@ inline std::ostream& operator << (std::ostream &os, const Graph &graph) {
 
 class GraphCSR {
 public:
+
     GraphCSR() = default;
+
+    GraphCSR(
+    std::vector<std::size_t> offsets,
+    std::vector<Node> edges)
+    : offsets_(std::move(offsets)),
+      edges_(std::move(edges)) {}
 
     // Build from adjacency-list graph
     explicit GraphCSR(const std::vector<NodeList>& graph) {
@@ -85,6 +92,24 @@ public:
 
     const std::vector<std::size_t>& offsets() const {
         return offsets_;
+    }
+
+    Graph to_adjacency_list() const {
+        const std::size_t n = size();
+        Graph g(n);
+
+        for (std::size_t u = 0; u < n; ++u) {
+            const Node* begin = edges_.data() + offsets_[u];
+            const Node* end   = edges_.data() + offsets_[u + 1];
+
+            g[u].reserve(end - begin);
+
+            for (const Node* it = begin; it != end; ++it) {
+                g[u].push_back(*it);
+            }
+        }
+
+        return g;
     }
 
 private:
