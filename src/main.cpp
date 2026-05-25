@@ -5,8 +5,8 @@
 #include "benchmark.h"
 
 int main() {
-    Benchmarker<Graph> bench(5);
-    Benchmarker<GraphCSR> benchCSR(5);
+    Benchmarker<Graph> bench(20);
+    Benchmarker<GraphCSR> benchCSR(20);
 
     //bench.add_algorithm("Sequential", [](const Graph& g) {
     //    return MISSolver<Graph>(g).find(Algorithm::Sequential);

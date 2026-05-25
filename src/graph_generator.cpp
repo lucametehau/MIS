@@ -132,7 +132,7 @@ GraphCSR GraphGenerator::generate_sparse_uniform_csr(
     {
         const int tid = omp_get_thread_num();
 
-        std::mt19937 gen(seed_ + tid);
+        std::mt19937 gen(seed_ + tid); // using the fixed seed plus thread id for reproducibility
 
         std::uniform_real_distribution<double> u_dist(0.0, 1.0);
 
@@ -200,7 +200,6 @@ GraphCSR GraphGenerator::generate_sparse_uniform_csr(
     // Write cursors
     std::vector<std::atomic<std::size_t>> cursor(n);
 
-    #pragma omp parallel for schedule(static)
     for (std::size_t i = 0; i < n; i++) {
         cursor[i].store(offsets[i], std::memory_order_relaxed);
     }
