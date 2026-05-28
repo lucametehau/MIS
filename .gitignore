@@ -2,7 +2,6 @@
 *.o
 *.d
 obj/
-*.pdf
 mis
 report/*.aux
 report/*latexmk
