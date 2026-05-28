@@ -4,3 +4,8 @@
 obj/
 *.pdf
 mis
+report/*.aux
+report/*latexmk
+report/*.fls
+report/*.log
+report/*gz
