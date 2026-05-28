@@ -115,31 +115,31 @@ int main() {
     });
 
     std::cout << "\nBenchmarking Weighted MIS (Uniform weights)...\n";
-    benchWeighted.run_suite("Uniform Sparse", nr_graphs, [&](int i) {
+    benchWeighted.run_suite("Uniform Sparse (uniform)", nr_graphs, [&](int i) {
         GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
         return gen.add_weights_uniform(gen.generate_sparse_uniform(n, 0.0004));
     });
-    benchWeighted.run_suite("Scale-Free", nr_graphs, [&](int i) {
+    benchWeighted.run_suite("Scale-Free (uniform)", nr_graphs, [&](int i) {
         GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
         return gen.add_weights_uniform(gen.generate_scale_free(n, 10, 5));
     });
 
     std::cout << "\nBenchmarking Weighted MIS (Exponential weights)...\n";
-    benchWeighted.run_suite("Uniform Sparse", nr_graphs, [&](int i) {
+    benchWeighted.run_suite("Uniform Sparse (exp)", nr_graphs, [&](int i) {
         GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
         return gen.add_weights_exp(gen.generate_sparse_uniform(n, 0.0004));
     });
-    benchWeighted.run_suite("Scale-Free", nr_graphs, [&](int i) {
+    benchWeighted.run_suite("Scale-Free (exp)", nr_graphs, [&](int i) {
         GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
         return gen.add_weights_exp(gen.generate_scale_free(n, 10, 5));
     });
 
     std::cout << "\nBenchmarking Weighted MIS (Clustered weights)...\n";
-    benchWeighted.run_suite("Uniform Sparse", nr_graphs, [&](int i) {
+    benchWeighted.run_suite("Uniform Sparse (clustered)", nr_graphs, [&](int i) {
         GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
         return gen.add_weights_clustered(gen.generate_sparse_uniform(n, 0.0004));
     });
-    benchWeighted.run_suite("Scale-Free", nr_graphs, [&](int i) {
+    benchWeighted.run_suite("Scale-Free (clustered)", nr_graphs, [&](int i) {
         GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
         return gen.add_weights_clustered(gen.generate_scale_free(n, 10, 5));
     });
