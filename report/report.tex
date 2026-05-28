@@ -1,5 +1,7 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
@@ -74,5 +76,54 @@ Luby Improved CSR & Scale-Free\_csr & 14.763 ms & 1.609 ms & 2.322 ms \\
 
 \section{Conclusion}
 The results indicate that while Luby's algorithm provides parallelization benefits, the Sequential implementation remains highly competitive for $N=1,000,000$ due to lower overhead. The "Improved" parallel version significantly outperforms the base Luby implementation by better managing workload distribution.
+
+\section{Weighted MIS}
+
+\subsection{Problem Formulation}
+
+We recall that the standard Maximal Independent Set (MIS) is a subset of vertices $S\subset V$ of a graph $G=(V, E)$ such that no two vertices in $S$ are joined by an edge, and no new vertex can be added to $S$ without creating an edge. Now, we extend this framework by adding a weight $w_v\in \mathbb{R}^+$ for every vertex $v\in V$. In this setting, the goal is now to find a MIS with the maximum possible total weight \textbf{in practice}. It is important to note that finding the \textbf{maximum weight independent set} (i.e., the globally optimal solution) is NP-hard in general. In this view, we will focus on weight-based heuristic algorithms that find a valid MIS while favoring vertices with high weights, and then compare their solution quality empirically. 
+
+\subsection{Algorithms}
+
+We decided to study the performance of the following two algorithms, and then benchmark their performance based on the initial weight assignment. 
+
+\subsubsection{Algorithm 1: Weighted Greedy}
+A vertex $v$ is added to the MIS if and only if it has the highest weight among its active neighbors:
+\begin{equation}
+  v \text{ wins} \iff w_v \geq w_u \quad \forall\, u \in N(v),\, u \text{ active}
+\end{equation}
+Ties are broken by vertex index. This approach is based on Basagni~\cite{basagni2001}.
+\subsubsection{Algorithm 2: Weighted Sampling}
+Each active vertex $v$ draws $U_v \sim \text{Uniform}(0,1)$ and computes a priority:
+\begin{equation}
+  p_v = U_v^{1/w_v}
+\end{equation}
+Vertex $v$ wins the round if $p_v > p_u$ for all active neighbors $u$. That is, we have that the vertices with higher weights have the higher priority. 
+
+\subsection{Initial Weight Distributions}
+
+\textbf{Uniform:} Each vertex $v$ is assigned a weight drawn uniformly at random:
+\begin{equation}
+  w_v \sim \text{Uniform}(1, 10)
+\end{equation}
+\textbf{Exponential:} Each vertex $v$ is assigned:
+\begin{equation}
+  w_v = 1 + X, \quad X \sim \text{Exponential}(\lambda)
+\end{equation}
+The $+1$ shift ensures $w_v > 0$, which is required by the power trick in Algorithm 2.
+\textbf{Clustered:} A fraction $\rho = 0.1$ of vertices are randomly designated as hotspots:
+\begin{equation}
+  w_v = \begin{cases} 10 & \text{with probability } \rho \\ 1 & \text{otherwise} \end{cases}
+\end{equation}
+
+\subsection{Experimental Results}
+
+\subsection{Discussion}
+
+\begin{thebibliography}{9}
+
+    \bibitem{basagni2001}
+    S. Basagni. Finding a maximal weighted independent set in wireless networks. Telecommunication Systems, 18(1–3):155–168, 2001. URL http://dx.doi.org/10.1023/A:1016747704458.
+\end{thebibliography}
 
 \end{document}
