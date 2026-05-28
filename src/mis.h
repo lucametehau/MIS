@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "luby_gpu.h"
 
 #include <set>
 #include <random>
@@ -194,7 +195,8 @@ NodeList luby_improved_mis(const GraphT& g, std::size_t num_threads = 0) {
 enum class Algorithm {
     Sequential,
     Luby,
-    LubyImproved
+    LubyImproved,
+    LubyGPU
 };
 
 template<typename GraphT>
@@ -215,6 +217,13 @@ public:
 
             case Algorithm::LubyImproved:
                 return luby_improved_mis(g_, num_threads);
+
+            case Algorithm::LubyGPU:
+                if constexpr (std::is_same_v<GraphT, GraphCSR>) {
+                    return luby_gpu_mis(g_);
+                } else {
+                    throw std::runtime_error("Please use CSR for GPU version of Luby");
+                }
         }
 
         return {};
