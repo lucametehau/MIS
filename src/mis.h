@@ -191,6 +191,69 @@ NodeList luby_improved_mis(const GraphT& g) {
     return mis;
 }
 
+// weighhted MIS: 3 approaches comparing how weight-biased priority affects total MIS weight
+
+// aproach 1: greedy
+// we select vertices with the highest weight among active neihgbors
+template <typename GraphT>
+NodeList weighted_greedy_mis(const GraphT& g) {
+    const auto n = g.size();
+    if (n == 0) return {};
+
+    std::vector<uint8_t> is_active(n, 1);
+    NodeList mis;
+
+    bool any_active = true;
+    while (any_active) {
+        std::vector<uint32_t> newly_added;
+        #pragma omp parallel
+        {
+            std::vector<uint32_t> local_newly_added;
+            #pragma omp for
+            for (std::size_t node = 0; node < n; node++) {
+                if (!is_active[node]) {
+                    continue;
+                }
+                bool is_max = true;
+                for (auto son : g[node]) {
+                    if (is_active[son]) {
+                        if (g.weight(son) > g.weight(node) ||
+                            (g.weight(son) == g.weight(node) && son > node)) {
+                            is_max = false;
+                            break;
+                        }
+                    }
+                }
+                if (is_max) {
+                    local_newly_added.push_back(node);
+                }
+            }
+            #pragma omp critical
+            {
+                newly_added.insert(newly_added.end(), local_newly_added.begin(), local_newly_added.end());
+            }
+        }
+
+        for (auto node : newly_added) {
+            mis.push_back(node);
+            is_active[node] = 0;
+            for (auto son : g[node]) {
+                is_active[son] = 0;
+            }
+        }
+
+        any_active = false;
+        #pragma omp parallel for reduction(||:any_active)
+        for (std::size_t i = 0; i < n; i++) {
+            if (is_active[i]) {
+                any_active = true;
+            }
+        }
+    }
+
+    return mis;
+}
+
 enum class Algorithm {
     Sequential,
     Luby,
