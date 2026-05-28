@@ -29,7 +29,11 @@ public:
     );
 
     // generates random weights for each vertex in the graph
-    WeightedGraph add_weights(const Graph& g, double min_w = 1.0, double max_w = 10.0);
+    // 3 differnet approaches for assigning weights used later for benchmarking
+    WeightedGraph add_weights_uniform(const Graph& g, double min_w = 1.0, double max_w = 10.0);
+    WeightedGraph add_weights_exp(const Graph& g);
+    WeightedGraph add_weights_clustered(const Graph& g, double low_weight = 1.0, double high_weight = 10.0, double fraction = 0.1);
+
 
 private:
     std::mt19937 gen_;
