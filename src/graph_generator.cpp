@@ -251,3 +251,12 @@ GraphCSR GraphGenerator::generate_scale_free_csr(
 {
     return GraphCSR(generate_scale_free(n, m0, m));
 }
+
+WeightedGraph GraphGenerator::add_weights(const Graph& g, double min_w, double max_w) {
+    std::uniform_real_distribution<double> dist(min_w, max_w);
+    std::vector<double> weights(g.size());
+    for (auto &w : weights) {
+        w = dist(gen_);
+    }
+    return  WeightedGraph{g, std::move(weights)};
+}
