@@ -13,35 +13,39 @@ In `mis.cpp`, under the `enum class Algorithm` we have the following algorithms:
 For now, we are using 2 types of graphs to test our algorithms: **Sparse Graphs**, **Scale-Free Graphs**, the latter resembling social network graphs.
 
 ```
-Generating Uniform Sparse Graph (n=500000, p=0.0004)...
+Running benchmarks (nr_graphs=5, nr_runs=10)...
 
-Generating Scale-Free Graph (n=500000, m0=10, m=5)...
+Benchmarking Uniform Sparse (csr) (n=1000000, p=0.0004)...
 
-=====================================================================================
-Algorithm           Graph Type                             Avg Time  MIS Size   Status
--------------------------------------------------------------------------------------
-Sequential          Uniform Sparse                       795.333 ms     13253   PASSED
-Luby                Uniform Sparse                       160.102 ms     13330   PASSED
-Luby Improved       Uniform Sparse                       171.574 ms     13383   PASSED
-Sequential          Scale-Free                           332.016 ms    122404   PASSED
-Luby                Scale-Free                            69.443 ms    168393   PASSED
-Luby Improved       Scale-Free                            72.933 ms    168775   PASSED
-=====================================================================================
-```
+Benchmarking Scale-Free (csr) (n=1000000, m0=10, m=5)...
 
-```
-Generating Uniform Sparse Graph (n=1000000, p=0.0004)...
+Benchmarking Uniform Sparse (n=1000000, p=0.0004)...
 
-Generating Scale-Free Graph (n=1000000, m0=10, m=5)...
+Benchmarking Scale-Free (n=1000000, m0=10, m=5)...
 
-=====================================================================================
-Algorithm           Graph Type                             Avg Time  MIS Size   Status
--------------------------------------------------------------------------------------
-Sequential          Uniform Sparse                      2388.343 ms     26563   PASSED
-Luby                Uniform Sparse                       370.076 ms     26676   PASSED
-Luby Improved       Uniform Sparse                       338.382 ms     26757   PASSED
-Sequential          Scale-Free                           887.931 ms    244909   PASSED
-Luby                Scale-Free                           165.470 ms    337121   PASSED
-Luby Improved       Scale-Free                           149.279 ms    336883   PASSED
-=====================================================================================
+==============================================================================================================
+Algorithm           Graph Type                         Mean Time     Graph Std   Avg Run Std
+--------------------------------------------------------------------------------------------------------------
+Sequential          Uniform Sparse                      9.817 ms      0.260 ms      0.294 ms
+Luby 1t             Uniform Sparse                    226.291 ms      2.124 ms      3.319 ms
+Luby                Uniform Sparse                     47.262 ms     14.699 ms     16.596 ms
+Luby Improved       Uniform Sparse                     28.112 ms      1.828 ms      2.443 ms
+Sequential          Scale-Free                         16.445 ms      0.649 ms      0.437 ms
+Luby 1t             Scale-Free                        130.172 ms      2.813 ms      6.150 ms
+Luby                Scale-Free                         76.912 ms     48.009 ms     47.493 ms
+Luby Improved       Scale-Free                         22.305 ms      4.322 ms      4.254 ms
+==============================================================================================================
+
+==============================================================================================================
+Algorithm           Graph Type                         Mean Time     Graph Std   Avg Run Std
+--------------------------------------------------------------------------------------------------------------
+Sequential CSR      Uniform Sparse_csr                  8.699 ms      0.236 ms      0.378 ms
+Luby 1t CSR         Uniform Sparse_csr                223.402 ms      9.145 ms     10.463 ms
+Luby CSR            Uniform Sparse_csr                 37.918 ms      1.313 ms      2.574 ms
+Luby Improved CSR   Uniform Sparse_csr                 27.369 ms      1.834 ms      4.524 ms
+Sequential CSR      Scale-Free_csr                      5.868 ms      0.077 ms      0.159 ms
+Luby 1t CSR         Scale-Free_csr                     77.717 ms      1.840 ms      1.300 ms
+Luby CSR            Scale-Free_csr                     23.562 ms      1.328 ms      3.895 ms
+Luby Improved CSR   Scale-Free_csr                     16.713 ms      3.229 ms      6.176 ms
+==============================================================================================================
 ```

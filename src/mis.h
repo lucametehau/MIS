@@ -12,20 +12,15 @@
 template <typename GraphT>
 NodeList sequential_mis(const GraphT& g) {
     NodeList mis;
-    std::set<uint32_t> nodes_set;
     const auto n = g.size();
+    std::vector<uint8_t> active(n, 1);
 
-    for (std::size_t i = 0; i < n; i++)
-        nodes_set.insert(i);
+    for (std::size_t i = 0; i < n; i++) {
+        if (active[i]) {
+            mis.push_back(i);
 
-    while (!nodes_set.empty()) {
-        const auto it = nodes_set.begin();
-        const auto node = *it;
-        nodes_set.erase(it);
-        mis.push_back(node);
-
-        for (auto &son : g[node]) {
-            nodes_set.erase(son);
+            for (auto &son : g[i])
+                active[son] = 0;
         }
     }
 
@@ -33,18 +28,20 @@ NodeList sequential_mis(const GraphT& g) {
 }
 
 template <typename GraphT>
-NodeList luby_mis(const GraphT& g) {
+NodeList luby_mis(const GraphT& g, std::size_t num_threads = 0) {
     const auto n = g.size();
     if (n == 0) return {};
 
     std::vector<uint8_t> is_active(n, 1); // not bool!!!
     std::vector<double> priorities(n, 0.0);
     NodeList mis;
+
+    auto threads = num_threads ? num_threads : omp_get_max_threads();
     
     bool any_active = true;
     while (any_active) {
         // assign random priorities to active nodes
-        #pragma omp parallel
+        #pragma omp parallel num_threads(threads)
         {
             static thread_local std::mt19937 gen(std::random_device{}());
             std::uniform_real_distribution<double> dist(0.0, 1.0);
@@ -57,7 +54,7 @@ NodeList luby_mis(const GraphT& g) {
 
         // identify nodes that have the maximum priority among their active neighbors
         std::vector<uint32_t> newly_added;
-        #pragma omp parallel
+        #pragma omp parallel num_threads(threads)
         {
             std::vector<uint32_t> local_newly_added;
             #pragma omp for
@@ -93,7 +90,7 @@ NodeList luby_mis(const GraphT& g) {
         }
 
         any_active = false;
-        #pragma omp parallel for reduction(||:any_active)
+        #pragma omp parallel for num_threads(threads) reduction(||:any_active)
         for (std::size_t i = 0; i < n; i++) {
             if (is_active[i]) {
                 any_active = true;
@@ -105,7 +102,7 @@ NodeList luby_mis(const GraphT& g) {
 }
 
 template <typename GraphT>
-NodeList luby_improved_mis(const GraphT& g) {
+NodeList luby_improved_mis(const GraphT& g, std::size_t num_threads = 0) {
     const auto n = g.size();
     if (n == 0) return {};
 
@@ -117,10 +114,12 @@ NodeList luby_improved_mis(const GraphT& g) {
 
     NodeList mis;
 
+    auto threads = num_threads ? num_threads : omp_get_max_threads();
+
     while (!active_nodes.empty()) {
         const size_t num_active = active_nodes.size();
 
-        #pragma omp parallel
+        #pragma omp parallel num_threads(threads)
         {
             static thread_local std::mt19937 gen(std::random_device{}());
             std::uniform_real_distribution<double> dist(0.0, 1.0);
@@ -131,7 +130,7 @@ NodeList luby_improved_mis(const GraphT& g) {
         }
 
         std::vector<uint32_t> newly_added;
-        #pragma omp parallel
+        #pragma omp parallel num_threads(threads)
         {
             std::vector<uint32_t> local_newly_added;
             #pragma omp for schedule(dynamic, 32)
@@ -155,7 +154,7 @@ NodeList luby_improved_mis(const GraphT& g) {
             }
         }
 
-        #pragma omp parallel for schedule(dynamic, 32)
+        #pragma omp parallel for num_threads(threads) schedule(dynamic, 32)
         for (std::size_t i = 0; i < newly_added.size(); i++) {
             uint32_t node = newly_added[i];
             is_active[node] = 0;
@@ -170,7 +169,7 @@ NodeList luby_improved_mis(const GraphT& g) {
         }
 
         std::vector<uint32_t> next_active_nodes;
-        #pragma omp parallel
+        #pragma omp parallel num_threads(threads)
         {
             std::vector<uint32_t> local_next;
             #pragma omp for schedule(static)
@@ -205,16 +204,16 @@ public:
     explicit MISSolver(const GraphT& g)
         : g_(g) {}
 
-    NodeList find(Algorithm algo) {
+    NodeList find(Algorithm algo, std::size_t num_threads = 0) {
         switch (algo) {
             case Algorithm::Sequential:
                 return sequential_mis(g_);
 
             case Algorithm::Luby:
-                return luby_mis(g_);
+                return luby_mis(g_, num_threads);
 
             case Algorithm::LubyImproved:
-                return luby_improved_mis(g_);
+                return luby_improved_mis(g_, num_threads);
         }
 
         return {};
