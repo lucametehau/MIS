@@ -27,6 +27,14 @@ public:
         std::size_t m0,
         std::size_t m
     );
+
+    // generates random weights for each vertex in the graph
+    // 3 differnet approaches for assigning weights used later for benchmarking
+    WeightedGraph add_weights_uniform(const Graph& g, double min_w = 1.0, double max_w = 10.0);
+    WeightedGraph add_weights_exp(const Graph& g);
+    WeightedGraph add_weights_clustered(const Graph& g, double low_weight = 1.0, double high_weight = 10.0, double fraction = 0.1);
+
+
 private:
     std::mt19937 gen_;
     uint32_t seed_;

@@ -21,6 +21,24 @@ inline std::ostream& operator << (std::ostream &os, const Graph &graph) {
     return os;
 }
 
+struct WeightedGraph {
+    Graph adj;
+    std::vector<double> weights;
+
+    std::size_t size() const { 
+        return adj.size(); 
+    }
+    
+    const NodeList& operator[](std::size_t u) const { 
+        return adj[u]; 
+    }
+    
+    double weight(std::size_t u) const { 
+        return weights[u]; 
+    
+    }
+};
+
 class GraphCSR {
 public:
 

@@ -3,6 +3,8 @@
 #include "mis.h"
 #include "graph_generator.h"
 #include "benchmark.h"
+#include "weighted_mis.h"
+#include "weighted_benchmark.h"
 
 int main() {
     const int nr_graphs = 5;
@@ -100,6 +102,49 @@ int main() {
 
     bench.print_results();
     benchCSR.print_results();
+
+
+    WeightedBenchmarker<WeightedGraph> benchWeighted(nr_runs, verify);
+
+    benchWeighted.add_algorithm("Weighted Greedy", [](const WeightedGraph& g) {
+        return weighted_greedy_mis(g);
+    });
+
+    benchWeighted.add_algorithm("Weighted Sampling", [](const WeightedGraph& g) {
+        return weighted_sampling_mis(g);
+    });
+
+    std::cout << "\nBenchmarking Weighted MIS (Uniform weights)...\n";
+    benchWeighted.run_suite("Uniform Sparse", nr_graphs, [&](int i) {
+        GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
+        return gen.add_weights_uniform(gen.generate_sparse_uniform(n, 0.0004));
+    });
+    benchWeighted.run_suite("Scale-Free", nr_graphs, [&](int i) {
+        GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
+        return gen.add_weights_uniform(gen.generate_scale_free(n, 10, 5));
+    });
+
+    std::cout << "\nBenchmarking Weighted MIS (Exponential weights)...\n";
+    benchWeighted.run_suite("Uniform Sparse", nr_graphs, [&](int i) {
+        GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
+        return gen.add_weights_exp(gen.generate_sparse_uniform(n, 0.0004));
+    });
+    benchWeighted.run_suite("Scale-Free", nr_graphs, [&](int i) {
+        GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
+        return gen.add_weights_exp(gen.generate_scale_free(n, 10, 5));
+    });
+
+    std::cout << "\nBenchmarking Weighted MIS (Clustered weights)...\n";
+    benchWeighted.run_suite("Uniform Sparse", nr_graphs, [&](int i) {
+        GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
+        return gen.add_weights_clustered(gen.generate_sparse_uniform(n, 0.0004));
+    });
+    benchWeighted.run_suite("Scale-Free", nr_graphs, [&](int i) {
+        GraphGenerator gen(base_seed + static_cast<uint32_t>(i));
+        return gen.add_weights_clustered(gen.generate_scale_free(n, 10, 5));
+    });
+
+    benchWeighted.print_results();
 
     return 0;
 }

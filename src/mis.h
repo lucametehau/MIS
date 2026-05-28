@@ -190,6 +190,7 @@ NodeList luby_improved_mis(const GraphT& g, std::size_t num_threads = 0) {
     return mis;
 }
 
+
 enum class Algorithm {
     Sequential,
     Luby,

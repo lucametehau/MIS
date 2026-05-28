@@ -251,3 +251,35 @@ GraphCSR GraphGenerator::generate_scale_free_csr(
 {
     return GraphCSR(generate_scale_free(n, m0, m));
 }
+
+WeightedGraph GraphGenerator::add_weights_uniform(const Graph& g, double min_w, double max_w) {
+    std::uniform_real_distribution<double> dist(min_w, max_w);
+    std::vector<double> weights(g.size());
+    for (auto &w : weights) {
+        w = dist(gen_);
+    }
+    return  WeightedGraph{g, std::move(weights)};
+}
+
+WeightedGraph GraphGenerator::add_weights_exp(const Graph& g) {
+    std::exponential_distribution<double> dist(0.5);
+    std::vector<double> weights(g.size());
+    for (auto& w : weights) {
+        w = 1.0 + dist(gen_);
+    }
+    return WeightedGraph{g, std::move(weights)};
+}
+
+// we assign high weigts to an "important" cluser of nodes (which account for a fractaion of all nodes), and then we assign low weight to the rest
+WeightedGraph GraphGenerator::add_weights_clustered(const Graph& g, double low_weight, double high_weight, double fraction) {
+    std::bernoulli_distribution dist(fraction);
+    std::vector<double> weights(g.size());
+    for (auto &w : weights) {
+        if (dist(gen_)) {
+            w = high_weight;  
+        } else {
+            w = low_weight; 
+        }
+    }
+    return WeightedGraph{g, std::move(weights)};
+}
