@@ -6,6 +6,36 @@
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
 
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=C++
+}
+
+\lstset{style=mystyle}
+
 \title{Maximal Independent Set (MIS) Algorithm Performance Report}
 \author{MIS Project Team}
 \date{\today}
@@ -18,11 +48,64 @@
 This report evaluates various implementations of the Maximal Independent Set (MIS) algorithm. MIS is a fundamental problem in graph theory with applications in distributed computing, wireless networks, and resource allocation. We compare a sequential implementation against parallel versions based on Luby's algorithm.
 
 \section{Algorithms}
-The following algorithms were implemented and tested:
+In this section, we describe the three main algorithms implemented for the Maximal Independent Set (MIS) problem.
+
+\subsection{Sequential MIS}
+The sequential algorithm follows a greedy approach. It iterates through all vertices and adds a vertex to the MIS if none of its neighbors have been added yet. This algorithm has a linear time complexity of $O(N+M)$, where $N$ is the number of vertices and $M$ is the number of edges.
+
+\begin{lstlisting}
+for (std::size_t i = 0; i < n; i++) {
+    if (active[i]) {
+        mis.push_back(i);
+        for (auto &son : g[i])
+            active[son] = 0;
+    }
+}
+\end{lstlisting}
+
+\subsection{Luby's Algorithm}
+Luby's algorithm is a randomized parallel algorithm. It operates in rounds, where in each round, active nodes are assigned random priorities. A node is added to the MIS if it has the highest priority among its active neighbors.
+
+\begin{lstlisting}
+while (any_active) {
+    // 1. Assign random priorities
+    #pragma omp parallel for
+    for (std::size_t node = 0; node < n; node++) {
+        if (is_active[node]) priorities[node] = dist(gen);
+    }
+
+    // 2. Identify nodes with local maximum priority
+    #pragma omp parallel
+    {
+        std::vector<uint32_t> local_newly_added;
+        #pragma omp for
+        for (std::size_t node = 0; node < n; node++) {
+            if (!is_active[node]) continue;
+            bool is_max = true;
+            for (auto son : g[node]) {
+                if (is_active[son]) {
+                    if (priorities[son] > priorities[node] || (priorities[son] == priorities[node] && son > node)) {
+                        is_max = false; break;
+                    }
+                }
+            }
+            if (is_max) local_newly_added.push_back(node);
+        }
+        #pragma omp critical
+        newly_added.insert(newly_added.end(), local_newly_added.begin(), local_newly_added.end());
+    }
+    // ... Update MIS and active nodes
+}
+\end{lstlisting}
+
+\subsection{Improved Luby's Algorithm}
+The "Luby Improved" version optimizes the base algorithm by addressing bottlenecks in workload distribution and memory access patterns. The key improvements include:
+
 \begin{itemize}
-    \item \textbf{Sequential}: The base $O(N+M)$ sequential implementation.
-    \item \textbf{Luby}: A parallel implementation of Luby's algorithm with $O((N+M)/T \cdot \log(N))$ complexity.
-    \item \textbf{Luby Improved}: An optimized version of Luby's algorithm utilizing dynamic OpenMP scheduling (\texttt{pragma omp parallel for schedule(dynamic, 32)}) to handle unbalanced node degrees.
+    \item \textbf{Active Node Vector}: Instead of iterating over all $N$ vertices in every round, we maintain a vector of \texttt{active\_nodes}. In each round, we only process the nodes present in this vector, significantly reducing the loop overhead as more nodes become inactive.
+    \item \textbf{Dynamic Scheduling}: For the neighbor-checking phase, we use \texttt{schedule(dynamic, 32)}. This is particularly effective for scale-free graphs where node degrees vary wildly, ensuring that threads processing high-degree nodes do not bottleneck the entire parallel region.
+    \item \textbf{Parallel Removal}: The process of marking neighbors as inactive is parallelized using OpenMP, which was a sequential step in our base Luby implementation.
+    \item \textbf{Efficient Filtering}: We use a parallel filter to construct the \texttt{active\_nodes} vector for the next round, avoiding unnecessary work in subsequent iterations.
 \end{itemize}
 
 \section{Experimental Setup}
