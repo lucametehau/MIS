@@ -31,3 +31,11 @@ std::string MISChecker::check_mis(const Graph &g, const NodeList &mis) const {
 
     return "MIS correct!";
 }
+
+double MISChecker::compute_mis_weight(const WeightedGraph& g, const NodeList& mis) const {
+    double total_weight = 0.0;
+    for (auto v : mis) {
+        total_weight += g.weight(v);
+    }
+    return total_weight;
+}

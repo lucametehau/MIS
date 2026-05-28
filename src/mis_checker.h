@@ -7,4 +7,5 @@ public:
     MISChecker() = default;
 
     std::string check_mis(const Graph &g, const NodeList &mis) const;
+    double compute_mis_weight(const WeightedGraph& g, const NodeList& mis) const;
 };

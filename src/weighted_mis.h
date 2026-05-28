@@ -140,5 +140,3 @@ NodeList weighted_sampling_mis(const WeightedGraph& g) {
 
     return mis;
 }
-
-// approach 3: weighted sampling improved
