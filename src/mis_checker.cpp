@@ -8,7 +8,6 @@ std::string MISChecker::check_mis(const Graph &g, const NodeList &mis) const {
         in_mis[v] = 1;
 
     for (std::size_t node = 0; node < n; ++node) {
-
         uint32_t neighbor_in_mis = n;
 
         for (const auto &son : g[node]) {

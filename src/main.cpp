@@ -23,6 +23,18 @@ int main() {
         return MISSolver<Graph>(g).find(Algorithm::Luby, 1);
     });
 
+    bench.add_algorithm("Luby 2t", [](const Graph& g) {
+        return MISSolver<Graph>(g).find(Algorithm::Luby, 2);
+    });
+
+    bench.add_algorithm("Luby 4t", [](const Graph& g) {
+        return MISSolver<Graph>(g).find(Algorithm::Luby, 4);
+    });
+
+    bench.add_algorithm("Luby 8t", [](const Graph& g) {
+        return MISSolver<Graph>(g).find(Algorithm::Luby, 8);
+    });
+
     bench.add_algorithm("Luby", [](const Graph& g) {
         return MISSolver<Graph>(g).find(Algorithm::Luby);
     });
@@ -37,6 +49,18 @@ int main() {
 
     benchCSR.add_algorithm("Luby 1t CSR", [](const GraphCSR& g) {
         return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 1);
+    });
+
+    benchCSR.add_algorithm("Luby 2t CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 2);
+    });
+
+    benchCSR.add_algorithm("Luby 4t CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 4);
+    });
+
+    benchCSR.add_algorithm("Luby 8t CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 8);
     });
 
     benchCSR.add_algorithm("Luby CSR", [](const GraphCSR& g) {
