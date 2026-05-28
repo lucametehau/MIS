@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Maximal Independent Set (MIS) Algorithm Performance Report}
+\author{MIS Project Team}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This report evaluates various implementations of the Maximal Independent Set (MIS) algorithm. MIS is a fundamental problem in graph theory with applications in distributed computing, wireless networks, and resource allocation. We compare a sequential implementation against parallel versions based on Luby's algorithm.
+
+\section{Algorithms}
+The following algorithms were implemented and tested:
+\begin{itemize}
+    \item \textbf{Sequential}: The base $O(N+M)$ sequential implementation.
+    \item \textbf{Luby}: A parallel implementation of Luby's algorithm with $O((N+M)/T \cdot \log(N))$ complexity.
+    \item \textbf{Luby Improved}: An optimized version of Luby's algorithm utilizing dynamic OpenMP scheduling (\texttt{pragma omp parallel for schedule(dynamic, 32)}) to handle unbalanced node degrees.
+\end{itemize}
+
+\section{Experimental Setup}
+Benchmarks were performed on two primary graph types:
+\begin{enumerate}
+    \item \textbf{Uniform Sparse}: Graphs with a low constant probability of edge existence.
+    \item \textbf{Scale-Free}: Graphs generated using the Barabási–Albert model, resembling social network structures with power-law degree distributions.
+\end{enumerate}
+Each algorithm was tested using both standard Adjacency List (Graph) and Compressed Sparse Row (GraphCSR) formats.
+
+\section{Results}
+The following results were captured from the initial benchmark suite (5 graphs, 10 runs each, $N=1,000,000$).
+
+\subsection{Standard Adjacency List Benchmarks}
+\begin{center}
+\begin{tabular}{l l r r r}
+\toprule
+Algorithm & Graph Type & Mean Time & Graph Std & Avg Run Std \\
+\midrule
+Sequential & Uniform Sparse & 8.837 ms & 0.368 ms & 0.417 ms \\
+Luby 1t & Uniform Sparse & 209.911 ms & 0.721 ms & 3.407 ms \\
+Luby 8t & Uniform Sparse & 46.948 ms & 1.792 ms & 1.675 ms \\
+Luby Improved & Uniform Sparse & 27.178 ms & 2.910 ms & 1.929 ms \\
+\midrule
+Sequential & Scale-Free & 14.516 ms & 0.235 ms & 0.448 ms \\
+Luby 1t & Scale-Free & 113.840 ms & 1.052 ms & 2.173 ms \\
+Luby 8t & Scale-Free & 63.341 ms & 43.632 ms & 23.487 ms \\
+Luby Improved & Scale-Free & 27.630 ms & 10.511 ms & 10.854 ms \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{CSR (Compressed Sparse Row) Benchmarks}
+\begin{center}
+\begin{tabular}{l l r r r}
+\toprule
+Algorithm & Graph Type & Mean Time & Graph Std & Avg Run Std \\
+\midrule
+Sequential CSR & Uniform Sparse\_csr & 9.806 ms & 1.121 ms & 0.305 ms \\
+Luby 1t CSR & Uniform Sparse\_csr & 192.208 ms & 1.242 ms & 3.607 ms \\
+Luby 8t CSR & Uniform Sparse\_csr & 42.141 ms & 0.312 ms & 1.634 ms \\
+Luby Improved CSR & Uniform Sparse\_csr & 24.641 ms & 0.807 ms & 2.796 ms \\
+\midrule
+Sequential CSR & Scale-Free\_csr & 5.254 ms & 0.102 ms & 0.159 ms \\
+Luby 1t CSR & Scale-Free\_csr & 73.781 ms & 1.570 ms & 2.005 ms \\
+Luby 8t CSR & Scale-Free\_csr & 25.240 ms & 4.114 ms & 0.460 ms \\
+Luby Improved CSR & Scale-Free\_csr & 14.763 ms & 1.609 ms & 2.322 ms \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+The results indicate that while Luby's algorithm provides parallelization benefits, the Sequential implementation remains highly competitive for $N=1,000,000$ due to lower overhead. The "Improved" parallel version significantly outperforms the base Luby implementation by better managing workload distribution.
+
+\end{document}
