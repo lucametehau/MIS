@@ -1,6 +1,4 @@
 #include "mis_checker.h"
-#include <set>
-#include <format>
 
 std::string MISChecker::check_mis(const Graph &g, const NodeList &mis) const {
     const std::size_t n = g.size();
