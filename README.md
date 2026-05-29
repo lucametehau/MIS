@@ -12,6 +12,10 @@ In `mis.cpp`, under the `enum class Algorithm` we have the following algorithms:
 
 For now, we are using 2 types of graphs to test our algorithms: **Sparse Graphs**, **Scale-Free Graphs**, the latter resembling social network graphs.
 
+## Normal MIS
+
+### Uniform Sparse = ~200 * N edges
+
 ```
 Running benchmarks (nr_graphs=5, nr_runs=10)...
 
@@ -61,6 +65,33 @@ Luby CSR            Scale-Free_csr                     20.783 ms      0.599 ms  
 Luby Improved CSR   Scale-Free_csr                     14.416 ms      0.531 ms      0.780 ms
 ==============================================================================================================
 ```
+
+### Uniform sparse = ~5 * N edges
+
+```
+==============================================================================================================
+Algorithm           Graph Type                         Mean Time     Graph Std   Avg Run Std
+--------------------------------------------------------------------------------------------------------------
+Sequential CSR      Scale-Free_csr                     33.857 ms      1.287 ms      0.984 ms
+Luby 1t CSR         Scale-Free_csr                    547.079 ms     35.133 ms     17.166 ms
+Luby 2t CSR         Scale-Free_csr                    317.887 ms     15.681 ms      8.742 ms
+Luby 4t CSR         Scale-Free_csr                    213.859 ms     12.070 ms     15.283 ms
+Luby 8t CSR         Scale-Free_csr                    175.613 ms     14.891 ms     12.623 ms
+Luby CSR            Scale-Free_csr                    194.601 ms     12.639 ms     33.443 ms
+Luby Improved CSR   Scale-Free_csr                    151.991 ms     26.106 ms     40.225 ms
+Luby GPU CSR        Scale-Free_csr                     79.293 ms      8.603 ms     12.775 ms
+Sequential CSR      Uniform Sparse_csr                 29.422 ms      0.247 ms      0.884 ms
+Luby 1t CSR         Uniform Sparse_csr                471.474 ms     14.050 ms     28.512 ms
+Luby 2t CSR         Uniform Sparse_csr                262.123 ms      9.464 ms     20.256 ms
+Luby 4t CSR         Uniform Sparse_csr                169.464 ms      8.720 ms      7.033 ms
+Luby 8t CSR         Uniform Sparse_csr                134.001 ms      1.259 ms      3.694 ms
+Luby CSR            Uniform Sparse_csr                161.269 ms     17.970 ms     30.512 ms
+Luby Improved CSR   Uniform Sparse_csr                151.849 ms     58.939 ms     26.662 ms
+Luby GPU CSR        Uniform Sparse_csr                 51.800 ms      0.883 ms      1.115 ms
+==============================================================================================================
+```
+
+## Weighted
 
 ```
 Benchmarking Weighted MIS (Uniform weights)...

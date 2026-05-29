@@ -113,7 +113,7 @@ GraphCSR GraphGenerator::generate_sparse_uniform_csr(
         return GraphCSR();
 
     // Keep graph sparse
-    double p_max = 200.0 / (static_cast<double>(n) - 1.0);
+    double p_max = 5.0 / (static_cast<double>(n) - 1.0);
     if (p > p_max)
         p = p_max;
 

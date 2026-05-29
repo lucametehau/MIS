@@ -59,8 +59,8 @@ __global__ void update_mis_and_active_kernel(
             is_active[u] = 0;
         } else {
             bool neighbor_selected = false;
-            for (size_t i = offsets[u]; i < offsets[u+1]; i++) {
-                Node v = edges[i];
+            for (auto i = offsets[u]; i < offsets[u+1]; i++) {
+                auto v = edges[i];
                 if (candidates[v]) {
                     neighbor_selected = true;
                     break;

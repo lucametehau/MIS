@@ -12,7 +12,7 @@ int main() {
     const uint32_t base_seed = 42;
     const bool verify = true;
 
-    const std::size_t n = 1000000;
+    const std::size_t n = 5000000;
 
     // Benchmarker<Graph> bench(nr_runs, verify);
     Benchmarker<GraphCSR> benchCSR(nr_runs, verify);
@@ -45,33 +45,33 @@ int main() {
     //     return MISSolver<Graph>(g).find(Algorithm::LubyImproved);
     // });
 
-    // benchCSR.add_algorithm("Sequential CSR", [](const GraphCSR& g) {
-    //    return MISSolver<GraphCSR>(g).find(Algorithm::Sequential);
-    // });
+    benchCSR.add_algorithm("Sequential CSR", [](const GraphCSR& g) {
+       return MISSolver<GraphCSR>(g).find(Algorithm::Sequential);
+    });
 
-    // benchCSR.add_algorithm("Luby 1t CSR", [](const GraphCSR& g) {
-    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 1);
-    // });
+    benchCSR.add_algorithm("Luby 1t CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 1);
+    });
 
-    // benchCSR.add_algorithm("Luby 2t CSR", [](const GraphCSR& g) {
-    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 2);
-    // });
+    benchCSR.add_algorithm("Luby 2t CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 2);
+    });
 
-    // benchCSR.add_algorithm("Luby 4t CSR", [](const GraphCSR& g) {
-    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 4);
-    // });
+    benchCSR.add_algorithm("Luby 4t CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 4);
+    });
 
-    // benchCSR.add_algorithm("Luby 8t CSR", [](const GraphCSR& g) {
-    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 8);
-    // });
+    benchCSR.add_algorithm("Luby 8t CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 8);
+    });
 
-    // benchCSR.add_algorithm("Luby CSR", [](const GraphCSR& g) {
-    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby);
-    // });
+    benchCSR.add_algorithm("Luby CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::Luby);
+    });
 
-    // benchCSR.add_algorithm("Luby Improved CSR", [](const GraphCSR& g) {
-    //     return MISSolver<GraphCSR>(g).find(Algorithm::LubyImproved);
-    // });
+    benchCSR.add_algorithm("Luby Improved CSR", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::LubyImproved);
+    });
 
     benchCSR.add_algorithm("Luby GPU CSR", [](const GraphCSR& g) {
         return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU);
