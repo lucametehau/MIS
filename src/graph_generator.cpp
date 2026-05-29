@@ -113,7 +113,7 @@ GraphCSR GraphGenerator::generate_sparse_uniform_csr(
         return GraphCSR();
 
     // Keep graph sparse
-    double p_max = 200.0 / (static_cast<double>(n) - 1.0);
+    double p_max = 5.0 / (static_cast<double>(n) - 1.0);
     if (p > p_max)
         p = p_max;
 
@@ -184,7 +184,7 @@ GraphCSR GraphGenerator::generate_sparse_uniform_csr(
     // Prefix sum -> offsets
     // ---------------------------------------------------------------------
 
-    std::vector<std::size_t> offsets(n + 1, 0);
+    std::vector<uint32_t> offsets(n + 1, 0);
 
     for (std::size_t i = 0; i < n; i++) {
         offsets[i + 1] = offsets[i] + degree[i];

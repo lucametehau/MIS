@@ -113,11 +113,10 @@ void Benchmarker<GraphT>::run_suite(
                 );
             }
 
-            if constexpr (std::is_same_v<GraphT, Graph>) {
-                if (verify_correctness_ && checker.check_mis(g, mis) != "MIS correct!") {
-                    std::cerr << "CORRECTNESS FAILED: " << algo.name
-                              << " on " << graph_type << " graph #" << graph_idx << "\n";
-                }
+            if (verify_correctness_ && checker.check_mis(g, mis) != "MIS correct!") {
+                std::cerr << "CORRECTNESS FAILED: " << algo.name
+                            << " on " << graph_type << " graph #" << graph_idx << "\n";
+                std::cerr << "Reason: " << checker.check_mis(g, mis) << "\n";
             }
 
             const auto [mean_ms, run_std_ms] = benchmark_detail::mean_and_sample_std(times);
