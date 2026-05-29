@@ -99,7 +99,7 @@ NodeList luby_gpu_mis(const GraphCSR& g) {
     cudaMemcpy(d_offsets, host_offsets.data(), (n + 1) * sizeof(uint32_t), cudaMemcpyHostToDevice);
     cudaMemcpy(d_edges, host_edges.data(), host_edges.size() * sizeof(Node), cudaMemcpyHostToDevice);
 
-    int blockSize = 256;
+    int blockSize = 512;
     int gridSize = (n + blockSize - 1) / blockSize;
 
     init_states_kernel<<<gridSize, blockSize>>>(d_is_active, d_in_mis, n);
