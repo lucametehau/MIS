@@ -1,7 +1,7 @@
 CXX = g++
 NVCC = nvcc
 CXXFLAGS = -Wall -Wextra -std=c++20 -O3 -fopenmp
-NVCCFLAGS = -O3 -std=c++17 -arch=sm_80 --expt-relaxed-constexpr
+NVCCFLAGS = -O3 -lineinfo -std=c++17 -arch=sm_80 --expt-relaxed-constexpr
 
 # Define our directories
 SRC_DIR = src

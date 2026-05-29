@@ -45,9 +45,9 @@ int main() {
     //     return MISSolver<Graph>(g).find(Algorithm::LubyImproved);
     // });
 
-    benchCSR.add_algorithm("Sequential CSR", [](const GraphCSR& g) {
-       return MISSolver<GraphCSR>(g).find(Algorithm::Sequential);
-    });
+    // benchCSR.add_algorithm("Sequential CSR", [](const GraphCSR& g) {
+    //    return MISSolver<GraphCSR>(g).find(Algorithm::Sequential);
+    // });
 
     // benchCSR.add_algorithm("Luby 1t CSR", [](const GraphCSR& g) {
     //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 1);
@@ -77,9 +77,9 @@ int main() {
         return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU);
     });
 
-    // benchCSR.add_algorithm("Luby GPU CSR 2", [](const GraphCSR& g) {
-    //     return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU2);
-    // });
+    benchCSR.add_algorithm("Luby GPU CSR 2", [](const GraphCSR& g) {
+        return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU2);
+    });
 
     std::cout << "\nRunning benchmarks (nr_graphs=" << nr_graphs
               << ", nr_runs=" << nr_runs << ")...\n";
