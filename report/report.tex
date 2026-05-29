@@ -183,7 +183,7 @@ Each active vertex $v$ draws $U_v \sim \text{Uniform}(0,1)$ and computes a prior
 \end{equation}
 Vertex $v$ wins the round if $p_v > p_u$ for all active neighbors $u$. That is, we have that the vertices with higher weights have the higher priority. 
 
-\subsection{Initial Weight Distributions}
+\subsection{Weight Distributions}
 
 \textbf{Uniform:} Each vertex $v$ is assigned a weight drawn uniformly at random:
 \begin{equation}
@@ -194,14 +194,45 @@ Vertex $v$ wins the round if $p_v > p_u$ for all active neighbors $u$. That is, 
   w_v = 1 + X, \quad X \sim \text{Exponential}(\lambda)
 \end{equation}
 The $+1$ shift ensures $w_v > 0$, which is required by the power trick in Algorithm 2.
+
 \textbf{Clustered:} A fraction $\rho = 0.1$ of vertices are randomly designated as hotspots:
 \begin{equation}
   w_v = \begin{cases} 10 & \text{with probability } \rho \\ 1 & \text{otherwise} \end{cases}
 \end{equation}
 
 \subsection{Experimental Results}
+The following results were captured from the weighted MIS benchmark suite ($N=1{,}000{,}000$, 5 graphs, 10 runs each).
+
+\begin{center}
+\begin{tabular}{l l r r r r}
+\toprule
+Algorithm & Graph Type & Mean Time & Graph Std & Avg Run Std & Mean Weight \\
+\midrule
+Weighted Greedy   & Uniform Sparse (uniform)   & 48.346 ms  & 10.319 ms & 19.023 ms & 221{,}205.58 \\
+Weighted Sampling & Uniform Sparse (uniform)   & 101.725 ms & 62.736 ms & 86.907 ms & 169{,}862.79 \\
+Weighted Greedy   & Scale-Free (uniform)       & 34.835 ms  &  5.984 ms &  7.885 ms & 2{,}220{,}850.60 \\
+Weighted Sampling & Scale-Free (uniform)       & 65.297 ms  & 47.481 ms & 41.514 ms & 1{,}998{,}436.76 \\
+\midrule
+Weighted Greedy   & Uniform Sparse (exp)       & 44.856 ms  &  2.182 ms &  7.825 ms & 183{,}315.81 \\
+Weighted Sampling & Uniform Sparse (exp)       & 65.743 ms  & 33.578 ms & 24.710 ms & 102{,}926.19 \\
+Weighted Greedy   & Scale-Free (exp)           & 53.372 ms  & 44.933 ms & 35.131 ms & 1{,}338{,}124.13 \\
+Weighted Sampling & Scale-Free (exp)           & 40.659 ms  &  5.625 ms & 11.284 ms & 1{,}133{,}123.09 \\
+\midrule
+Weighted Greedy   & Uniform Sparse (clustered) & 63.872 ms  &  4.375 ms &  7.339 ms & 163{,}565.00 \\
+Weighted Sampling & Uniform Sparse (clustered) & 45.382 ms  &  3.298 ms &  5.214 ms & 107{,}985.08 \\
+Weighted Greedy   & Scale-Free (clustered)     & 41.219 ms  & 12.018 ms & 25.399 ms & 1{,}051{,}920.60 \\
+Weighted Sampling & Scale-Free (clustered)     & 62.458 ms  & 25.564 ms & 44.257 ms & 877{,}655.86 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \subsection{Discussion}
+
+The results indicate that the Greedy approach consistely fidns the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasinally make the algorith give a low weight neighboring vertex a higher priority, thus permanently excluding the high weight vertex from the MIS selection.
+
+We also see that on Scale-Free graph types, the mean weight results are much closer than that of on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 30--78\% on Uniform Sparse).
+
+We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively less very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
 \begin{thebibliography}{9}
 
