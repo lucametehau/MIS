@@ -12,7 +12,7 @@ int main() {
     const uint32_t base_seed = 42;
     const bool verify = true;
 
-    const std::size_t n = 2000000;
+    const std::size_t n = 1000000;
 
     // Benchmarker<Graph> bench(nr_runs, verify);
     Benchmarker<GraphCSR> benchCSR(nr_runs, verify);
@@ -77,9 +77,9 @@ int main() {
         return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU);
     });
 
-    benchCSR.add_algorithm("Luby GPU CSR 2", [](const GraphCSR& g) {
-        return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU2);
-    });
+    // benchCSR.add_algorithm("Luby GPU CSR 2", [](const GraphCSR& g) {
+    //     return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU2);
+    // });
 
     std::cout << "\nRunning benchmarks (nr_graphs=" << nr_graphs
               << ", nr_runs=" << nr_runs << ")...\n";
