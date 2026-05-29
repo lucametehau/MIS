@@ -5,11 +5,11 @@
 #include <iostream>
 #include <vector>
 
-__device__ inline float hash_priority(int id, int iteration) {
+__device__ inline unsigned int hash_priority(int id, int iteration) {
     unsigned int state = id * 747796405u + 2891336453u + iteration;
     unsigned int word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
     unsigned int h = (word >> 22u) ^ word;
-    return (float)h / (float)UINT_MAX;
+    return h;
 }
 
 __global__ void init_states_kernel(uint8_t* is_active, uint8_t* in_mis, int n) {
@@ -21,14 +21,14 @@ __global__ void init_states_kernel(uint8_t* is_active, uint8_t* in_mis, int n) {
 }
 
 __global__ void select_assign_priorities_fused_candidates_kernel(
-    const size_t* offsets, const Node* edges,
+    const uint32_t* offsets, const Node* edges,
     const uint8_t* is_active, uint8_t* candidates, 
     int iteration_num, int n) 
 {
     int u = blockIdx.x * blockDim.x + threadIdx.x;
     if (u < n && is_active[u]) {
         bool is_max = true;
-        float prio_u = hash_priority(u, iteration_num);
+        auto prio_u = hash_priority(u, iteration_num);
         
         for (auto i = offsets[u]; i < offsets[u+1]; i++) {
             auto v = edges[i];
@@ -47,7 +47,7 @@ __global__ void select_assign_priorities_fused_candidates_kernel(
 }
 
 __global__ void update_mis_and_active_kernel(
-    const size_t* offsets, const Node* edges,
+    const uint32_t* offsets, const Node* edges,
     uint8_t* is_active, uint8_t* in_mis,
     const uint8_t* candidates, int* d_any_active, int n) 
 {
@@ -81,21 +81,21 @@ NodeList luby_gpu_mis(const GraphCSR& g) {
     const auto& host_offsets = g.offsets();
     const auto& host_edges = g.edges();
 
-    size_t* d_offsets;
+    uint32_t* d_offsets;
     Node* d_edges;
     uint8_t* d_is_active;
     uint8_t* d_in_mis;
     uint8_t* d_candidates;
     int* d_any_active;
 
-    cudaMalloc(&d_offsets, (n + 1) * sizeof(size_t));
+    cudaMalloc(&d_offsets, (n + 1) * sizeof(uint32_t));
     cudaMalloc(&d_edges, host_edges.size() * sizeof(Node));
     cudaMalloc(&d_is_active, n * sizeof(uint8_t));
     cudaMalloc(&d_in_mis, n * sizeof(uint8_t));
     cudaMalloc(&d_candidates, n * sizeof(uint8_t));
     cudaMalloc(&d_any_active, sizeof(int));
 
-    cudaMemcpy(d_offsets, host_offsets.data(), (n + 1) * sizeof(size_t), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_offsets, host_offsets.data(), (n + 1) * sizeof(uint32_t), cudaMemcpyHostToDevice);
     cudaMemcpy(d_edges, host_edges.data(), host_edges.size() * sizeof(Node), cudaMemcpyHostToDevice);
 
     int blockSize = 256;

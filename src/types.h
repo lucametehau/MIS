@@ -45,7 +45,7 @@ public:
     GraphCSR() = default;
 
     GraphCSR(
-    std::vector<std::size_t> offsets,
+    std::vector<uint32_t> offsets,
     std::vector<Node> edges)
     : offsets_(std::move(offsets)),
       edges_(std::move(edges)) {}
@@ -108,7 +108,7 @@ public:
         return edges_;
     }
 
-    const std::vector<std::size_t>& offsets() const {
+    const std::vector<uint32_t>& offsets() const {
         return offsets_;
     }
 
@@ -131,6 +131,6 @@ public:
     }
 
 private:
-    std::vector<std::size_t> offsets_;
+    std::vector<uint32_t> offsets_;
     std::vector<Node> edges_;
 };

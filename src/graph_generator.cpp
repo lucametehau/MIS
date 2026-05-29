@@ -184,7 +184,7 @@ GraphCSR GraphGenerator::generate_sparse_uniform_csr(
     // Prefix sum -> offsets
     // ---------------------------------------------------------------------
 
-    std::vector<std::size_t> offsets(n + 1, 0);
+    std::vector<uint32_t> offsets(n + 1, 0);
 
     for (std::size_t i = 0; i < n; i++) {
         offsets[i + 1] = offsets[i] + degree[i];

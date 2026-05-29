@@ -77,6 +77,10 @@ int main() {
         return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU);
     });
 
+    // benchCSR.add_algorithm("Luby GPU CSR 2", [](const GraphCSR& g) {
+    //     return MISSolver<GraphCSR>(g).find(Algorithm::LubyGPU2);
+    // });
+
     std::cout << "\nRunning benchmarks (nr_graphs=" << nr_graphs
               << ", nr_runs=" << nr_runs << ")...\n";
 
