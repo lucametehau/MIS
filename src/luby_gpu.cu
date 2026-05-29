@@ -5,11 +5,11 @@
 #include <iostream>
 #include <vector>
 
-__global__ void init_curand_kernel(curandState *state, unsigned long seed, int n) {
-    int id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < n) {
-        curand_init(seed, id, 0, &state[id]);
-    }
+__device__ inline float hash_priority(int id, int iteration) {
+    unsigned int state = id * 747796405u + 2891336453u + iteration;
+    unsigned int word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+    unsigned int h = (word >> 22u) ^ word;
+    return (float)h / (float)UINT_MAX;
 }
 
 __global__ void init_states_kernel(uint8_t* is_active, uint8_t* in_mis, int n) {
@@ -20,27 +20,20 @@ __global__ void init_states_kernel(uint8_t* is_active, uint8_t* in_mis, int n) {
     }
 }
 
-__global__ void assign_priorities_kernel(float* priorities, const uint8_t* is_active, curandState* state, int n) {
-    int id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < n && is_active[id]) {
-        priorities[id] = curand_uniform(&state[id]);
-    }
-}
-
-__global__ void select_candidates_kernel(
+__global__ void select_assign_priorities_fused_candidates_kernel(
     const size_t* offsets, const Node* edges,
-    const float* priorities, const uint8_t* is_active,
-    uint8_t* candidates, int n) 
+    const uint8_t* is_active, uint8_t* candidates, 
+    int iteration_num, int n) 
 {
     int u = blockIdx.x * blockDim.x + threadIdx.x;
     if (u < n && is_active[u]) {
         bool is_max = true;
-        float prio_u = priorities[u];
+        float prio_u = hash_priority(u, iteration_num);
         
         for (auto i = offsets[u]; i < offsets[u+1]; i++) {
             auto v = edges[i];
             if (is_active[v]) {
-                auto prio_v = priorities[v];
+                auto prio_v = hash_priority(v, iteration_num);
                 if (prio_v > prio_u || (prio_v == prio_u && v > u)) {
                     is_max = false;
                     break;
@@ -93,8 +86,6 @@ NodeList luby_gpu_mis(const GraphCSR& g) {
     uint8_t* d_is_active;
     uint8_t* d_in_mis;
     uint8_t* d_candidates;
-    float* d_priorities;
-    curandState* d_states;
     int* d_any_active;
 
     cudaMalloc(&d_offsets, (n + 1) * sizeof(size_t));
@@ -102,8 +93,6 @@ NodeList luby_gpu_mis(const GraphCSR& g) {
     cudaMalloc(&d_is_active, n * sizeof(uint8_t));
     cudaMalloc(&d_in_mis, n * sizeof(uint8_t));
     cudaMalloc(&d_candidates, n * sizeof(uint8_t));
-    cudaMalloc(&d_priorities, n * sizeof(float));
-    cudaMalloc(&d_states, n * sizeof(curandState));
     cudaMalloc(&d_any_active, sizeof(int));
 
     cudaMemcpy(d_offsets, host_offsets.data(), (n + 1) * sizeof(size_t), cudaMemcpyHostToDevice);
@@ -113,20 +102,21 @@ NodeList luby_gpu_mis(const GraphCSR& g) {
     int gridSize = (n + blockSize - 1) / blockSize;
 
     init_states_kernel<<<gridSize, blockSize>>>(d_is_active, d_in_mis, n);
-    init_curand_kernel<<<gridSize, blockSize>>>(d_states, 42, n);
     cudaDeviceSynchronize();
 
-    int h_any_active = 1;
+    int h_any_active = 1, iteration_num = 0;
     while (h_any_active) {
         h_any_active = 0;
         cudaMemcpy(d_any_active, &h_any_active, sizeof(int), cudaMemcpyHostToDevice);
 
-        assign_priorities_kernel<<<gridSize, blockSize>>>(d_priorities, d_is_active, d_states, n);
-        select_candidates_kernel<<<gridSize, blockSize>>>(d_offsets, d_edges, d_priorities, d_is_active, d_candidates, n);
+        select_assign_priorities_fused_candidates_kernel<<<gridSize, blockSize>>>(d_offsets, d_edges, d_is_active, d_candidates, iteration_num, n);
         update_mis_and_active_kernel<<<gridSize, blockSize>>>(d_offsets, d_edges, d_is_active, d_in_mis, d_candidates, d_any_active, n);
         
         cudaMemcpy(&h_any_active, d_any_active, sizeof(int), cudaMemcpyDeviceToHost);
+        iteration_num++;
     }
+
+    std::cout << iteration_num << " iterations for a graph of " << n << " nodes\n";
 
     std::vector<uint8_t> h_in_mis(n);
     cudaMemcpy(h_in_mis.data(), d_in_mis, n * sizeof(uint8_t), cudaMemcpyDeviceToHost);
@@ -143,8 +133,6 @@ NodeList luby_gpu_mis(const GraphCSR& g) {
     cudaFree(d_is_active);
     cudaFree(d_in_mis);
     cudaFree(d_candidates);
-    cudaFree(d_priorities);
-    cudaFree(d_states);
     cudaFree(d_any_active);
 
     return mis;
