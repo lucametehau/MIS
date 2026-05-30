@@ -1,0 +1,29 @@
+suite,label,algorithm,graph_family,n,c,m0,m,representation,threads,nr_graphs,nr_runs,mean_time_ms,graph_std_ms,mean_run_std_ms
+3,uniform_5m_c5,Sequential CSR,uniform_sparse,5000000,5,10,5,csr,0,10,5,29.2268,2.71839,0.757843
+3,uniform_5m_c5,Luby 8t CSR,uniform_sparse,5000000,5,10,5,csr,8,10,5,97.3504,0.623,0.709696
+3,uniform_5m_c5,Luby Improved 8t CSR,uniform_sparse,5000000,5,10,5,csr,8,10,5,36.3811,0.821276,0.719383
+3,uniform_5m_c5,Luby GPU CSR,uniform_sparse,5000000,5,10,5,csr,24,10,5,43.9092,12.8489,9.54154
+3,uniform_5m_c10,Sequential CSR,uniform_sparse,5000000,10,10,5,csr,0,10,5,34.6868,0.297872,0.421627
+3,uniform_5m_c10,Luby 8t CSR,uniform_sparse,5000000,10,10,5,csr,8,10,5,129.77,0.304328,1.17316
+3,uniform_5m_c10,Luby Improved 8t CSR,uniform_sparse,5000000,10,10,5,csr,8,10,5,49.5919,0.906378,0.941853
+3,uniform_5m_c10,Luby GPU CSR,uniform_sparse,5000000,10,10,5,csr,24,10,5,65.4439,0.277389,0.418208
+3,uniform_5m_c20,Sequential CSR,uniform_sparse,5000000,20,10,5,csr,0,10,5,42.333,0.669691,0.679737
+3,uniform_5m_c20,Luby 8t CSR,uniform_sparse,5000000,20,10,5,csr,8,10,5,155.504,0.585456,1.09139
+3,uniform_5m_c20,Luby Improved 8t CSR,uniform_sparse,5000000,20,10,5,csr,8,10,5,71.0532,0.177406,1.12375
+3,uniform_5m_c20,Luby GPU CSR,uniform_sparse,5000000,20,10,5,csr,24,10,5,123.69,0.184986,0.266546
+3,uniform_5m_c50,Sequential CSR,uniform_sparse,5000000,50,10,5,csr,0,10,5,47.577,0.868851,0.861968
+3,uniform_5m_c50,Luby 8t CSR,uniform_sparse,5000000,50,10,5,csr,8,10,5,183.482,1.06305,2.59985
+3,uniform_5m_c50,Luby Improved 8t CSR,uniform_sparse,5000000,50,10,5,csr,8,10,5,109.218,0.208492,0.935384
+3,uniform_5m_c50,Luby GPU CSR,uniform_sparse,5000000,50,10,5,csr,24,10,5,307.423,1.75353,1.59113
+3,scale_free_5m_m05_m3,Sequential CSR,scale_free,5000000,10,5,3,csr,0,10,5,26.4737,0.971455,0.869042
+3,scale_free_5m_m05_m3,Luby 8t CSR,scale_free,5000000,10,5,3,csr,8,10,5,68.8808,0.482949,0.552536
+3,scale_free_5m_m05_m3,Luby Improved 8t CSR,scale_free,5000000,10,5,3,csr,8,10,5,29.3945,0.146011,0.156449
+3,scale_free_5m_m05_m3,Luby GPU CSR,scale_free,5000000,10,5,3,csr,24,10,5,32.1546,0.928981,0.8181
+3,scale_free_5m_m010_m5,Sequential CSR,scale_free,5000000,10,10,5,csr,0,10,5,27.5487,0.12296,0.162219
+3,scale_free_5m_m010_m5,Luby 8t CSR,scale_free,5000000,10,10,5,csr,8,10,5,86.3354,0.468135,1.03444
+3,scale_free_5m_m010_m5,Luby Improved 8t CSR,scale_free,5000000,10,10,5,csr,8,10,5,36.2805,0.116228,0.129818
+3,scale_free_5m_m010_m5,Luby GPU CSR,scale_free,5000000,10,10,5,csr,24,10,5,39.8725,0.091422,0.187592
+3,scale_free_5m_m020_m10,Sequential CSR,scale_free,5000000,10,20,10,csr,0,10,5,36.3566,0.954832,0.399388
+3,scale_free_5m_m020_m10,Luby 8t CSR,scale_free,5000000,10,20,10,csr,8,10,5,120.519,0.337508,0.756704
+3,scale_free_5m_m020_m10,Luby Improved 8t CSR,scale_free,5000000,10,20,10,csr,8,10,5,47.707,0.274295,0.118203
+3,scale_free_5m_m020_m10,Luby GPU CSR,scale_free,5000000,10,20,10,csr,24,10,5,64.6613,0.700358,0.606099

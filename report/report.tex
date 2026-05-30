@@ -8,6 +8,7 @@
 
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{graphicx}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -173,14 +174,106 @@ The second model is the Barabási–Albert (BA) model~\cite{barabasi1999}, which
 Scale-free graphs are characterized by a power-law degree distribution, $P(k) \sim k^{-\gamma}$. These graphs contain "hubs"—a few vertices with extremely high degrees—while the vast majority of vertices have very few connections. This topology is representative of social networks and the World Wide Web. For MIS algorithms, scale-free graphs present a significant challenge for parallelization due to extreme workload imbalance, making optimizations like dynamic scheduling and CSR layout essential.
 
 \section{Results}
-TO FILL IN
 
-\subsection{Standard Adjacency List Benchmarks}
-TO FILL IN
+In this section, we present the performance results for the various implementations. All benchmarks were performed on a machine with an 8-core CPU (16 threads) and a modern GPU.
 
-\subsection{CSR (Compressed Sparse Row) Benchmarks}
+\subsection{CSR vs Adjacency List Representation}
+We first justify the use of the Compressed Sparse Row (CSR) representation. Table~\ref{tab:csr_vs_adj} compares the execution time of sequential and Luby (8 threads) algorithms using both adjacency list and CSR formats on graphs with $10^6$ nodes.
 
-TO FILL IN
+\begin{table}[h]
+    \centering
+    \caption{CSR vs Adjacency List Performance ($N=10^6$)}
+    \label{tab:csr_vs_adj}
+    \begin{tabular}{l l r r}
+        \toprule
+        Algorithm & Graph Family & Adjacency List (ms) & CSR (ms) \\
+        \midrule
+        Sequential & Uniform Sparse & 6.16 & 4.87 \\
+        Sequential & Scale-Free     & 5.49 & 4.90 \\
+        Luby 8t    & Uniform Sparse & 24.44 & 16.57 \\
+        Luby 8t    & Scale-Free     & 16.50 & 12.02 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+As expected, the CSR format consistently outperforms the standard adjacency list due to improved cache locality and reduced memory overhead. Figure~\ref{fig:section0} visualizes this difference.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/section0_csr_justify.pdf}
+    \caption{Performance comparison between CSR and standard adjacency list representation.}
+    \label{fig:section0}
+\end{figure}
+
+\subsection{Scaling with Graph Size}
+We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $2 \cdot 10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling} and visualized in Figure~\ref{fig:section1}.
+
+\begin{table}[h]
+    \centering
+    \caption{Performance scaling with problem size $N$ (CSR representation)}
+    \label{tab:size_scaling}
+    \begin{tabular}{l r r r r}
+        \toprule
+        $N$ & Sequential (ms) & Luby 8t (ms) & Luby Improved 8t (ms) & Luby GPU (ms) \\
+        \midrule
+        \multicolumn{5}{c}{\textit{Uniform Sparse ($c=10$)}} \\
+        $10^5$            & 0.49   & 1.11    & 0.84   & 5.40   \\
+        $10^6$            & 4.65   & 15.79   & 8.68   & 11.88  \\
+        $5 \cdot 10^6$    & 34.65  & 129.25  & 50.07  & 65.35  \\
+        $10^7$            & 74.86  & 305.24  & 103.28 & 142.11 \\
+        \midrule
+        \multicolumn{5}{c}{\textit{Scale-Free ($m=5$)}} \\
+        $10^5$            & 0.44   & 0.98    & 0.74   & 0.99   \\
+        $10^6$            & 4.64   & 11.44   & 6.70   & 7.82   \\
+        $5 \cdot 10^6$    & 27.61  & 87.22   & 37.65  & 39.91  \\
+        $10^7$            & 60.45  & 205.54  & 78.02  & 86.20  \\
+        $2 \cdot 10^7$    & 247.66 & 515.66  & 229.32 & 301.81 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/section1_scaling_n.pdf}
+    \caption{Scaling of execution time with the number of vertices $N$ for different algorithms.}
+    \label{fig:section1}
+\end{figure}
+
+\subsection{Thread Scaling}
+We investigated the parallel efficiency of Luby and Improved Luby algorithms by varying the number of threads. Figure~\ref{fig:section2} shows the results for $N = 5 \cdot 10^6$. Improved Luby shows significantly better scaling and lower overhead compared to the base implementation.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/section2_thread_scaling.pdf}
+    \caption{Performance scaling with the number of OpenMP threads ($N=5 \cdot 10^6$).}
+    \label{fig:section2}
+\end{figure}
+
+\subsection{Impact of Graph Topology}
+The degree distribution significantly impacts parallel performance. Table~\ref{tab:topology} shows results for different densities ($c$) and scale-free parameters. The GPU implementation shows its strength on denser graphs, while Improved Luby handles highly irregular scale-free graphs effectively.
+
+\begin{table}[h]
+    \centering
+    \caption{Performance comparison across different graph topologies ($N=5 \cdot 10^6$)}
+    \label{tab:topology}
+    \begin{tabular}{l r r r r}
+        \toprule
+        Topology & Sequential (ms) & Luby 8t (ms) & Improved 8t (ms) & GPU (ms) \\
+        \midrule
+        Uniform $c=5$  & 29.23 & 97.35  & 36.38 & 43.91  \\
+        Uniform $c=50$ & 47.58 & 183.48 & 109.22 & 307.42 \\
+        SF $m=3$       & 26.47 & 68.88  & 29.39  & 32.15  \\
+        SF $m=10$      & 36.36 & 120.52 & 47.71  & 64.66  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/section3_topology.pdf}
+    \caption{Effect of graph density and scale-free parameters on algorithm performance.}
+    \label{fig:section3}
+\end{figure}
 
 \section{Weighted MIS}
 
@@ -250,11 +343,11 @@ Weighted Sampling & Scale-Free (clustered)     & 62.458 ms  & 25.564 ms & 44.257
 
 \subsection{Discussion}
 
-The results indicate that the Greedy approach consistely fidns the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasinally make the algorith give a low weight neighboring vertex a higher priority, thus permanently excluding the high weight vertex from the MIS selection.
+The results indicate that the Greedy approach consistently finds the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasionally make the algorithm give a low-weight neighboring vertex a higher priority, thus permanently excluding the high-weight vertex from the MIS selection.
 
-We also see that on Scale-Free graph types, the mean weight results are much closer than that of on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 30--78\% on Uniform Sparse).
+We also see that on Scale-Free graph types, the mean weight results are much closer than those on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 30--78\% on Uniform Sparse).
 
-We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively less very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
+We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
 \begin{thebibliography}{9}
 
