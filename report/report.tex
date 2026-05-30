@@ -173,45 +173,14 @@ The second model is the Barabási–Albert (BA) model~\cite{barabasi1999}, which
 Scale-free graphs are characterized by a power-law degree distribution, $P(k) \sim k^{-\gamma}$. These graphs contain "hubs"—a few vertices with extremely high degrees—while the vast majority of vertices have very few connections. This topology is representative of social networks and the World Wide Web. For MIS algorithms, scale-free graphs present a significant challenge for parallelization due to extreme workload imbalance, making optimizations like dynamic scheduling and CSR layout essential.
 
 \section{Results}
-The following results were captured from the initial benchmark suite (5 graphs, 10 runs each, $N=1,000,000$).
+TO FILL IN
 
 \subsection{Standard Adjacency List Benchmarks}
-\begin{center}
-\begin{tabular}{l l r r r}
-\toprule
-Algorithm & Graph Type & Mean Time & Graph Std & Avg Run Std \\
-\midrule
-Sequential & Uniform Sparse & 8.837 ms & 0.368 ms & 0.417 ms \\
-Luby 1t & Uniform Sparse & 209.911 ms & 0.721 ms & 3.407 ms \\
-Luby 8t & Uniform Sparse & 46.948 ms & 1.792 ms & 1.675 ms \\
-Luby Improved & Uniform Sparse & 27.178 ms & 2.910 ms & 1.929 ms \\
-\midrule
-Sequential & Scale-Free & 14.516 ms & 0.235 ms & 0.448 ms \\
-Luby 1t & Scale-Free & 113.840 ms & 1.052 ms & 2.173 ms \\
-Luby 8t & Scale-Free & 63.341 ms & 43.632 ms & 23.487 ms \\
-Luby Improved & Scale-Free & 27.630 ms & 10.511 ms & 10.854 ms \\
-\bottomrule
-\end{tabular}
-\end{center}
+TO FILL IN
 
 \subsection{CSR (Compressed Sparse Row) Benchmarks}
-\begin{center}
-\begin{tabular}{l l r r r}
-\toprule
-Algorithm & Graph Type & Mean Time & Graph Std & Avg Run Std \\
-\midrule
-Sequential CSR & Uniform Sparse\_csr & 9.806 ms & 1.121 ms & 0.305 ms \\
-Luby 1t CSR & Uniform Sparse\_csr & 192.208 ms & 1.242 ms & 3.607 ms \\
-Luby 8t CSR & Uniform Sparse\_csr & 42.141 ms & 0.312 ms & 1.634 ms \\
-Luby Improved CSR & Uniform Sparse\_csr & 24.641 ms & 0.807 ms & 2.796 ms \\
-\midrule
-Sequential CSR & Scale-Free\_csr & 5.254 ms & 0.102 ms & 0.159 ms \\
-Luby 1t CSR & Scale-Free\_csr & 73.781 ms & 1.570 ms & 2.005 ms \\
-Luby 8t CSR & Scale-Free\_csr & 25.240 ms & 4.114 ms & 0.460 ms \\
-Luby Improved CSR & Scale-Free\_csr & 14.763 ms & 1.609 ms & 2.322 ms \\
-\bottomrule
-\end{tabular}
-\end{center}
+
+TO FILL IN
 
 \section{Weighted MIS}
 
