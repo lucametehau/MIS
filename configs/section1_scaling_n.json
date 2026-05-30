@@ -31,6 +31,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -62,6 +67,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -92,6 +102,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -123,6 +138,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -153,6 +173,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -184,6 +209,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -214,6 +244,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -245,6 +280,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -275,6 +315,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -306,6 +351,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -336,6 +386,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     },
@@ -367,6 +422,11 @@
           "algorithm": "luby_improved",
           "representation": "csr",
           "threads": 8
+        },
+        {
+          "name": "Luby GPU CSR",
+          "algorithm": "luby_gpu",
+          "representation": "csr"
         }
       ]
     }
