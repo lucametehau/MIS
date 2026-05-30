@@ -213,6 +213,24 @@ We also investigated the impact of graph density on performance by varying the e
     \end{tabular}
 \end{table}
 
+\subsection{Performance on Scale-Free Graphs}
+We also evaluated the performance on Scale-Free graphs ($m=5, m_0=10$) to observe how the algorithms handle highly unbalanced degree distributions. The results are summarized in Table~\ref{tab:scale_free_scaling}.
+
+\begin{table}[h]
+    \centering
+    \caption{Performance scaling with number of nodes $N$ (Scale-Free graphs, $m=5$)}
+    \label{tab:scale_free_scaling}
+    \begin{tabular}{l r r r r}
+        \toprule
+        $N$ & Sequential (ms) & Luby CSR (ms) & Luby Improved (ms) & Luby GPU (ms) \\
+        \midrule
+        $5 \cdot 10^6$  & 55.530  & 124.323 & 53.586  & 78.322  \\
+        $10^7$          & 115.266 & 225.880 & 176.630 & 150.709 \\
+        $2 \cdot 10^7$  & 247.660 & 515.658 & 229.322 & 301.812 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
 \section{Weighted MIS}
 
 \subsection{Problem Formulation}
@@ -281,11 +299,11 @@ Weighted Sampling & Scale-Free (clustered)     & 62.458 ms  & 25.564 ms & 44.257
 
 \subsection{Discussion}
 
-The results indicate that the Greedy approach consistely fidns the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasinally make the algorith give a low weight neighboring vertex a higher priority, thus permanently excluding the high weight vertex from the MIS selection.
+The results indicate that the Greedy approach consistently finds the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasionally make the algorithm give a low-weight neighboring vertex a higher priority, thus permanently excluding the high-weight vertex from the MIS selection.
 
-We also see that on Scale-Free graph types, the mean weight results are much closer than that of on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 30--78\% on Uniform Sparse).
+We also see that on Scale-Free graph types, the mean weight results are much closer than those on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 30--78\% on Uniform Sparse).
 
-We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively less very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
+We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
 \begin{thebibliography}{9}
 
