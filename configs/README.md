@@ -12,6 +12,13 @@ make
 .\scripts\run_all_sections.ps1
 ```
 
+Linux:
+
+```bash
+chmod +x scripts/run_all_sections.sh
+./scripts/run_all_sections.sh
+```
+
 Pre-warm graph cache before long runs:
 
 ```powershell
