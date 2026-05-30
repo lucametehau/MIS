@@ -38,8 +38,8 @@
 
 \lstset{style=mystyle}
 
-\title{Maximal Independent Set (MIS) Algorithm Performance Report}
-\author{MIS Project Team}
+\title{Maximal Independent Set -- Algorithms Performance Report}
+\author{Luca Metehau, Luca Perju, Georgy Salakhutdinov}
 \date{\today}
 
 \begin{document}
@@ -189,10 +189,10 @@ We first justify the use of the Compressed Sparse Row (CSR) representation. Tabl
         \toprule
         Algorithm & Graph Family & Adjacency List (ms) & CSR (ms) \\
         \midrule
-        Sequential & Uniform Sparse & 6.16 & 4.87 \\
-        Sequential & Scale-Free     & 5.49 & 4.90 \\
-        Luby 8t    & Uniform Sparse & 24.44 & 16.57 \\
-        Luby 8t    & Scale-Free     & 16.50 & 12.02 \\
+        Sequential & Uniform Sparse & 6.1638 & 4.8709 \\
+        Sequential & Scale-Free     & 5.4876 & 4.8984 \\
+        Luby 8t    & Uniform Sparse & 24.4400 & 16.5651 \\
+        Luby 8t    & Scale-Free     & 16.4970 & 12.0153 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -218,16 +218,16 @@ We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $
         $N$ & Sequential (ms) & Luby 8t (ms) & Luby Improved 8t (ms) & Luby GPU (ms) \\
         \midrule
         \multicolumn{5}{c}{\textit{Uniform Sparse ($c=10$)}} \\
-        $10^5$            & 0.49   & 1.11    & 0.84   & 5.40   \\
-        $10^6$            & 4.65   & 15.79   & 8.68   & 11.88  \\
-        $5 \cdot 10^6$    & 34.65  & 129.25  & 50.07  & 65.35  \\
-        $10^7$            & 74.86  & 305.24  & 103.28 & 142.11 \\
+        $10^5$            & 0.4865   & 1.1145    & 0.8423   & 5.4047   \\
+        $10^6$            & 4.6451   & 15.7862   & 8.6779   & 11.8825  \\
+        $5 \cdot 10^6$    & 34.6515  & 129.2530  & 50.0654  & 65.3489  \\
+        $10^7$            & 74.8600  & 305.2400  & 103.2810 & 142.1110 \\
         \midrule
         \multicolumn{5}{c}{\textit{Scale-Free ($m=5$)}} \\
-        $10^5$            & 0.44   & 0.98    & 0.74   & 0.99   \\
-        $10^6$            & 4.64   & 11.44   & 6.70   & 7.82   \\
-        $5 \cdot 10^6$    & 27.61  & 87.22   & 37.65  & 39.91  \\
-        $10^7$            & 60.45  & 205.54  & 78.02  & 86.20  \\
+        $10^5$            & 0.4444   & 0.9787    & 0.7381   & 0.9870   \\
+        $10^6$            & 4.6395   & 11.4371   & 6.6997   & 7.8233   \\
+        $5 \cdot 10^6$    & 27.6094  & 87.2163   & 37.6498  & 39.9078  \\
+        $10^7$            & 60.4546  & 205.5430  & 78.0189  & 86.2039  \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -260,10 +260,10 @@ The degree distribution significantly impacts parallel performance. Table~\ref{t
         \toprule
         Topology & Sequential (ms) & Luby 8t (ms) & Improved 8t (ms) & GPU (ms) \\
         \midrule
-        Uniform $c=5$  & 29.23 & 97.35  & 36.38 & 43.91  \\
-        Uniform $c=50$ & 47.58 & 183.48 & 109.22 & 307.42 \\
-        SF $m=3$       & 26.47 & 68.88  & 29.39  & 32.15  \\
-        SF $m=10$      & 36.36 & 120.52 & 47.71  & 64.66  \\
+        Uniform $c=5$  & 29.2268 & 97.3504  & 36.3811 & 43.9092  \\
+        Uniform $c=50$ & 47.5770 & 183.4820 & 109.2180 & 307.4230 \\
+        SF $m=3$       & 26.4737 & 68.8808  & 29.3945  & 32.1546  \\
+        SF $m=10$      & 27.5487 & 86.3354  & 36.2805  & 39.8725  \\
         \bottomrule
     \end{tabular}
 \end{table}
