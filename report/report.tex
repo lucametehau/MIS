@@ -173,14 +173,45 @@ The second model is the Barabási–Albert (BA) model~\cite{barabasi1999}, which
 Scale-free graphs are characterized by a power-law degree distribution, $P(k) \sim k^{-\gamma}$. These graphs contain "hubs"—a few vertices with extremely high degrees—while the vast majority of vertices have very few connections. This topology is representative of social networks and the World Wide Web. For MIS algorithms, scale-free graphs present a significant challenge for parallelization due to extreme workload imbalance, making optimizations like dynamic scheduling and CSR layout essential.
 
 \section{Results}
-TO FILL IN
+In this section, we present the performance results for the various implementations on different graph sizes and densities. All benchmarks were performed using the Compressed Sparse Row (CSR) representation.
 
-\subsection{Standard Adjacency List Benchmarks}
-TO FILL IN
+\subsection{Scaling with Graph Size}
+We evaluated the algorithms on Uniform Sparse graphs ($c=10$) of varying sizes, ranging from $10^5$ to $5 \cdot 10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling}.
 
-\subsection{CSR (Compressed Sparse Row) Benchmarks}
+\begin{table}[h]
+    \centering
+    \caption{Performance scaling with problem size $N$ (Density $c=10$, Uniform Sparse)}
+    \label{tab:size_scaling}
+    \begin{tabular}{l r r r r}
+        \toprule
+        $N$ & Sequential (ms) & Luby CSR (ms) & Luby Improved (ms) & Luby GPU (ms) \\
+        \midrule
+        $10^5$            & 0.392   & 0.756    & 0.528   & 5.057   \\
+        $10^6$            & 4.961   & 38.911   & 11.362  & 15.969  \\
+        $10^7$            & 75.168  & 265.706  & 176.964 & 149.048 \\
+        $5 \cdot 10^7$    & 707.244 & 2107.693 & 759.012 & 805.434 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-TO FILL IN
+\subsection{Scaling with Graph Density}
+We also investigated the impact of graph density on performance by varying the edge constant $c$ for a fixed number of nodes $N = 5 \cdot 10^6$. The results are shown in Table~\ref{tab:density_scaling}.
+
+\begin{table}[h]
+    \centering
+    \caption{Performance scaling with graph density $c$ (Nodes $N=5 \cdot 10^6$, Uniform Sparse)}
+    \label{tab:density_scaling}
+    \begin{tabular}{l r r r r}
+        \toprule
+        $c$ (Edges/N) & Sequential (ms) & Luby CSR (ms) & Luby Improved (ms) & Luby GPU (ms) \\
+        \midrule
+        2   & 28.151 & 125.158 & 21.629  & 32.262  \\
+        10  & 35.344 & 108.079 & 50.415  & 70.863  \\
+        50  & 43.759 & 193.763 & 109.687 & 308.092 \\
+        100 & 45.117 & 182.206 & 78.040  & 620.733 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \section{Weighted MIS}
 

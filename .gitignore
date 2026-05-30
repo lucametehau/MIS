@@ -8,3 +8,4 @@ report/*latexmk
 report/*.fls
 report/*.log
 report/*gz
+*.txt
