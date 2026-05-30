@@ -9,6 +9,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{float}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -180,7 +181,7 @@ In this section, we present the performance results for the various implementati
 \subsection{CSR vs Adjacency List Representation}
 We first justify the use of the Compressed Sparse Row (CSR) representation. Table~\ref{tab:csr_vs_adj} compares the execution time of sequential and Luby (8 threads) algorithms using both adjacency list and CSR formats on graphs with $10^6$ nodes.
 
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \caption{CSR vs Adjacency List Performance ($N=10^6$)}
     \label{tab:csr_vs_adj}
@@ -198,7 +199,7 @@ We first justify the use of the Compressed Sparse Row (CSR) representation. Tabl
 
 As expected, the CSR format consistently outperforms the standard adjacency list due to improved cache locality and reduced memory overhead. Figure~\ref{fig:section0} visualizes this difference.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/section0_csr_justify.pdf}
     \caption{Performance comparison between CSR and standard adjacency list representation.}
@@ -206,9 +207,9 @@ As expected, the CSR format consistently outperforms the standard adjacency list
 \end{figure}
 
 \subsection{Scaling with Graph Size}
-We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $2 \cdot 10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling} and visualized in Figure~\ref{fig:section1}.
+We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling} and visualized in Figure~\ref{fig:section1}.
 
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \caption{Performance scaling with problem size $N$ (CSR representation)}
     \label{tab:size_scaling}
@@ -227,12 +228,11 @@ We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $
         $10^6$            & 4.64   & 11.44   & 6.70   & 7.82   \\
         $5 \cdot 10^6$    & 27.61  & 87.22   & 37.65  & 39.91  \\
         $10^7$            & 60.45  & 205.54  & 78.02  & 86.20  \\
-        $2 \cdot 10^7$    & 247.66 & 515.66  & 229.32 & 301.81 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/section1_scaling_n.pdf}
     \caption{Scaling of execution time with the number of vertices $N$ for different algorithms.}
@@ -242,7 +242,7 @@ We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $
 \subsection{Thread Scaling}
 We investigated the parallel efficiency of Luby and Improved Luby algorithms by varying the number of threads. Figure~\ref{fig:section2} shows the results for $N = 5 \cdot 10^6$. Improved Luby shows significantly better scaling and lower overhead compared to the base implementation.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/section2_thread_scaling.pdf}
     \caption{Performance scaling with the number of OpenMP threads ($N=5 \cdot 10^6$).}
@@ -252,7 +252,7 @@ We investigated the parallel efficiency of Luby and Improved Luby algorithms by 
 \subsection{Impact of Graph Topology}
 The degree distribution significantly impacts parallel performance. Table~\ref{tab:topology} shows results for different densities ($c$) and scale-free parameters. The GPU implementation shows its strength on denser graphs, while Improved Luby handles highly irregular scale-free graphs effectively.
 
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \caption{Performance comparison across different graph topologies ($N=5 \cdot 10^6$)}
     \label{tab:topology}
@@ -268,7 +268,7 @@ The degree distribution significantly impacts parallel performance. Table~\ref{t
     \end{tabular}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/section3_topology.pdf}
     \caption{Effect of graph density and scale-free parameters on algorithm performance.}
