@@ -45,10 +45,35 @@
 \maketitle
 
 \section{Introduction}
-This report evaluates various implementations of the Maximal Independent Set (MIS) algorithm. MIS is a fundamental problem in graph theory with applications in distributed computing, wireless networks, and resource allocation. We compare a sequential implementation against parallel versions based on Luby's algorithm.
+This report evaluates various implementations of the Maximal Independent Set (MIS) algorithm. MIS is a fundamental problem in graph theory with applications in distributed computing, wireless networks, and resource allocation. We compare a sequential implementation against parallel versions based on Luby's algorithm, including multi-core CPU and GPU implementations.
+
+\section{Graph Representation}
+The efficiency of graph algorithms is heavily influenced by how the graph is stored in memory. In this project, we implemented and compared two primary representations:
+
+\subsection{Standard Adjacency List}
+The \texttt{Graph} type is implemented as a \texttt{std::vector<std::vector<uint32\_t>>}. While this representation is intuitive and allows for easy graph construction, it has several drawbacks for high-performance computing:
+\begin{itemize}
+    \item \textbf{Memory Fragmentation}: Each vertex's adjacency list is a separate memory allocation, leading to scattered data across the heap.
+    \item \textbf{Cache Misses}: Traversing the neighbors of multiple vertices often results in frequent cache misses due to the lack of data contiguity.
+    \item \textbf{Overhead}: Each \texttt{std::vector} object carries internal metadata (pointers, size, capacity), which adds significant memory overhead for large graphs with millions of vertices.
+\end{itemize}
+
+\subsection{Compressed Sparse Row (CSR)}
+To address the limitations of the adjacency list, we implemented the \texttt{GraphCSR} class. This format stores the entire graph structure using two contiguous arrays:
+\begin{itemize}
+    \item \textbf{\texttt{offsets}}: An array of size $N+1$ where \texttt{offsets[i]} marks the starting position of vertex $i$'s neighbors in the \texttt{edges} array.
+    \item \textbf{\texttt{edges}}: A single array of size $M$ (total number of edges) containing all neighbor indices stored back-to-back.
+\end{itemize}
+
+The CSR format offers several advantages:
+\begin{itemize}
+    \item \textbf{Cache Locality}: Since all edges are stored contiguously, traversing neighbors is highly cache-efficient, significantly speeding up neighbor traversal phases.
+    \item \textbf{Memory Efficiency}: CSR eliminates the metadata overhead of individual vectors and reduces memory fragmentation.
+    \item \textbf{GPU Compatibility}: The contiguous nature of CSR makes it the standard format for graph processing on GPUs, as it allows for efficient coalesced memory accesses.
+\end{itemize}
 
 \section{Algorithms}
-In this section, we describe the three main algorithms implemented for the Maximal Independent Set (MIS) problem.
+In this section, we describe the main algorithms implemented for the Maximal Independent Set (MIS) problem.
 
 \subsection{Sequential MIS}
 The sequential algorithm follows a greedy approach. It iterates through all vertices and adds a vertex to the MIS if none of its neighbors have been added yet. This algorithm has a linear time complexity of $O(N+M)$, where $N$ is the number of vertices and $M$ is the number of edges.
@@ -64,57 +89,60 @@ for (std::size_t i = 0; i < n; i++) {
 \end{lstlisting}
 
 \subsection{Luby's Algorithm}
-Luby's algorithm is a randomized parallel algorithm. It operates in rounds, where in each round, active nodes are assigned random priorities. A node is added to the MIS if it has the highest priority among its active neighbors.
+Luby's algorithm is a randomized parallel algorithm for finding a Maximal Independent Set. It is designed to work in a synchronous, round-based manner, making it highly suitable for parallel architectures like multi-core CPUs (via OpenMP) and GPUs (via CUDA).
 
-\begin{lstlisting}
-while (any_active) {
-    // 1. Assign random priorities
-    #pragma omp parallel for
-    for (std::size_t node = 0; node < n; node++) {
-        if (is_active[node]) priorities[node] = dist(gen);
-    }
+The algorithm proceeds in discrete rounds, where each round consists of the following steps:
+\begin{enumerate}
+    \item \textbf{Priority Assignment}: Each currently active vertex $v$ independently chooses a random priority $p(v)$ from a large uniform distribution.
+    \item \textbf{Local Maxima Selection}: A vertex $v$ is added to the independent set if its priority $p(v)$ is strictly greater than the priorities of all its active neighbors $N(v)$. Ties are typically broken using vertex indices.
+    \item \textbf{Pruning}: Any vertex selected in the previous step, along with all of its neighbors, is marked as inactive and removed from further consideration.
+\end{enumerate}
 
-    // 2. Identify nodes with local maximum priority
-    #pragma omp parallel
-    {
-        std::vector<uint32_t> local_newly_added;
-        #pragma omp for
-        for (std::size_t node = 0; node < n; node++) {
-            if (!is_active[node]) continue;
-            bool is_max = true;
-            for (auto son : g[node]) {
-                if (is_active[son]) {
-                    if (priorities[son] > priorities[node] || (priorities[son] == priorities[node] && son > node)) {
-                        is_max = false; break;
-                    }
-                }
-            }
-            if (is_max) local_newly_added.push_back(node);
-        }
-        #pragma omp critical
-        newly_added.insert(newly_added.end(), local_newly_added.begin(), local_newly_added.end());
-    }
-    // ... Update MIS and active nodes
-}
-\end{lstlisting}
+The process repeats on the remaining induced subgraph until no active vertices remain. 
+
+\textbf{Complexity}: Theoretically, Luby's algorithm is very efficient. It has been proven that the algorithm finds a Maximal Independent Set in $O(\log n)$ rounds with high probability, where $n$ is the number of vertices. Since each round involves traversing edges, the total work is proportional to the number of edges $M$, but the "depth" of the computation is logarithmic, allowing for significant speedups on parallel hardware.
+
+\subsubsection{OpenMP Parallelization}
+We utilized OpenMP to parallelize Luby's algorithm on multi-core CPUs, given these factors:
+\begin{itemize}
+    \item \textbf{Shared Memory Model}: Luby's algorithm requires threads to frequently access the priorities and status of neighboring vertices. OpenMP's shared memory architecture allows all threads to access the global graph structure and priority arrays without the overhead of explicit message passing.
+    \item \textbf{Data Parallelism}: The core operations of each round—priority assignment and local maxima selection—are naturally data-parallel. Using \texttt{\#pragma omp parallel for} allowed us to distribute these tasks across available CPU cores with minimal code modification.
+    \item \textbf{Dynamic Load Balancing}: In irregular graphs, such as Scale-Free networks, vertex degrees vary significantly. OpenMP's \texttt{dynamic} scheduling helps mitigate the "straggler" problem where threads processing high-degree nodes would otherwise bottleneck the entire round.
+    \item \textbf{Synchronization Primitives}: OpenMP provides efficient primitives like \texttt{atomic} and \texttt{critical} sections, which were essential for managing shared state updates (e.g., adding nodes to the MIS or updating the "any active" flag) safely across threads.
+\end{itemize}
 
 \subsection{Improved Luby's Algorithm}
 The "Luby Improved" version optimizes the base algorithm by addressing bottlenecks in workload distribution and memory access patterns. The key improvements include:
 
 \begin{itemize}
-    \item \textbf{Active Node Vector}: Instead of iterating over all $N$ vertices in every round, we maintain a vector of \texttt{active\_nodes}. In each round, we only process the nodes present in this vector, significantly reducing the loop overhead as more nodes become inactive.
-    \item \textbf{Dynamic Scheduling}: For the neighbor-checking phase, we use \texttt{schedule(dynamic, 32)}. This is particularly effective for scale-free graphs where node degrees vary wildly, ensuring that threads processing high-degree nodes do not bottleneck the entire parallel region.
-    \item \textbf{Parallel Removal}: The process of marking neighbors as inactive is parallelized using OpenMP, which was a sequential step in our base Luby implementation.
-    \item \textbf{Efficient Filtering}: We use a parallel filter to construct the \texttt{active\_nodes} vector for the next round, avoiding unnecessary work in subsequent iterations.
+    \item \textbf{Active Node Vector}: Instead of iterating over all $N$ vertices in every round, we maintain a vector of \texttt{active\_nodes}.
+    \item \textbf{Dynamic Scheduling}: For the neighbor-checking phase, we use \texttt{schedule(dynamic, 32)} to balance load on irregular graphs.
+    \item \textbf{Efficient Filtering}: We use a parallel filter to construct the \texttt{active\_nodes} vector for subsequent rounds.
+\end{itemize}
+
+\subsection{Luby GPU Implementation}
+The GPU version of Luby's algorithm leverages the massive parallelism of CUDA architectures. The implementation is based on the CSR format and follows an iterative process where several kernels are launched per round:
+
+\begin{itemize}
+    \item \textbf{Iterative Kernel Execution}: The algorithm operates in rounds. In each round, we launch a sequence of specialized CUDA kernels: one to identify candidates (local maxima) and another to update the MIS and prune neighbors. This cycle continues iteratively until all vertices have been processed.
+    \item \textbf{Fused Kernels}: We combine priority assignment and candidate selection into a single kernel (\texttt{select\_assign\_priorities\_fused\_candidates\_kernel}) to reduce global memory traffic and kernel launch overhead.
+    \item \textbf{Restricted Pointers}: We utilize the \texttt{\_\_restrict\_\_} keyword for all input arrays (offsets, edges, active status). This informs the compiler that these pointers do not alias, enabling more aggressive load/store optimizations and better utilization of read-only data caches.
+    \item \textbf{Deterministic Hashing}: Instead of generating and storing random numbers for all nodes in every round, we use a lightweight \texttt{hash\_priority} function based on the vertex ID and iteration number. This reduces memory bandwidth requirements as priorities are computed on-the-fly.
+    \item \textbf{Minimized Host-Device Transfers}: Only a single integer (\texttt{any\_active}) is copied from device to host at the end of each round to determine convergence, keeping the hot loop mostly on the GPU.
 \end{itemize}
 
 \section{Experimental Setup}
-Benchmarks were performed on two primary graph types:
-\begin{enumerate}
-    \item \textbf{Uniform Sparse}: Graphs with a low constant probability of edge existence.
-    \item \textbf{Scale-Free}: Graphs generated using the Barabási–Albert model, resembling social network structures with power-law degree distributions.
-\end{enumerate}
-Each algorithm was tested using both standard Adjacency List (Graph) and Compressed Sparse Row (GraphCSR) formats.
+To rigorously evaluate the performance of our implementations, we utilize two distinct random graph models that represent different topological characteristics commonly found in real-world applications.
+
+\subsection{Erdős-Rényi Model (Uniform Sparse)}
+The first model is the standard Erdős-Rényi random graph, specifically the $G(n, p)$ model~\cite{erdos1959}. In this model, each potential edge between any two vertices exists independently with a constant probability $p$. For our "Uniform Sparse" benchmarks, we set $p$ such that the average number of edges is $M = c \cdot N$, with $c$ typically set to $10$.
+
+This graph type serves as a baseline for "average" case performance. The degree distribution follows a Poisson distribution for large $n$, meaning most vertices have approximately the same number of neighbors. This relative uniformity simplifies workload balancing across parallel threads.
+
+\subsection{Barabási–Albert Model (Scale-Free)}
+The second model is the Barabási–Albert (BA) model~\cite{barabasi1999}, which generates scale-free graphs using a preferential attachment mechanism. The process starts with a small clique of $m_0$ nodes, and new nodes are added one by one, each connecting to $m$ existing nodes with a probability proportional to their current degree.
+
+Scale-free graphs are characterized by a power-law degree distribution, $P(k) \sim k^{-\gamma}$. These graphs contain "hubs"—a few vertices with extremely high degrees—while the vast majority of vertices have very few connections. This topology is representative of social networks and the World Wide Web. For MIS algorithms, scale-free graphs present a significant challenge for parallelization due to extreme workload imbalance, making optimizations like dynamic scheduling and CSR layout essential.
 
 \section{Results}
 The following results were captured from the initial benchmark suite (5 graphs, 10 runs each, $N=1,000,000$).
@@ -156,9 +184,6 @@ Luby Improved CSR & Scale-Free\_csr & 14.763 ms & 1.609 ms & 2.322 ms \\
 \bottomrule
 \end{tabular}
 \end{center}
-
-\section{Conclusion}
-The results indicate that while Luby's algorithm provides parallelization benefits, the Sequential implementation remains highly competitive for $N=1,000,000$ due to lower overhead. The "Improved" parallel version significantly outperforms the base Luby implementation by better managing workload distribution.
 
 \section{Weighted MIS}
 
@@ -238,6 +263,13 @@ We see that the exponential and clustered initial weight distributions improve g
 
     \bibitem{basagni2001}
     S. Basagni. Finding a maximal weighted independent set in wireless networks. Telecommunication Systems, 18(1–3):155–168, 2001. URL http://dx.doi.org/10.1023/A:1016747704458.
+
+    \bibitem{erdos1959}
+    Erdős, P. and Rényi, A., 1959. On random graphs I. Publ. Math. Debrecen, 6, pp.290-297.
+
+    \bibitem{barabasi1999}
+    Barabási, A.L. and Albert, R., 1999. Emergence of scaling in random networks. Science, 286(5439), pp.509-512.
+
 \end{thebibliography}
 
 \end{document}
