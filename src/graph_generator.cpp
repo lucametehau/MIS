@@ -23,18 +23,12 @@ Graph GraphGenerator::generate_uniform(std::size_t n, double p) {
     return g;
 }
 
-Graph GraphGenerator::generate_sparse_uniform(std::size_t n, double p) {
+Graph GraphGenerator::generate_sparse_uniform(std::size_t n, double c) {
     Graph g(n);
     if (n < 2) return g;
     
-    // Limit expected number of edges to 100 * n
-    // Total possible edges: M = n * (n - 1) / 2
-    // Expected edges: E = p * M
-    // p * n * (n - 1) / 2 <= 100 * n  => p <= 200 / (n - 1)
-    double p_max = 200.0 / (static_cast<double>(n) - 1.0);
-    if (p > p_max) {
-        p = p_max;
-    }
+    double p = 2.0 * c / (static_cast<double>(n) - 1.0);
+    if (p > 1.0) p = 1.0;
     
     std::uniform_real_distribution<double> u_dist(0.0, 1.0);
     for (std::size_t i = 0; i < n; i++) {
@@ -107,15 +101,13 @@ GraphCSR GraphGenerator::generate_uniform_csr(
 
 GraphCSR GraphGenerator::generate_sparse_uniform_csr(
     std::size_t n,
-    double p)
+    double c)
 {
     if (n < 2)
         return GraphCSR();
 
-    // Keep graph sparse
-    double p_max = 5.0 / (static_cast<double>(n) - 1.0);
-    if (p > p_max)
-        p = p_max;
+    double p = 2.0 * c / (static_cast<double>(n) - 1.0);
+    if (p > 1.0) p = 1.0;
 
     const int nt = omp_get_max_threads();
 

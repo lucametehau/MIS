@@ -10,7 +10,7 @@ public:
     Graph generate_uniform(std::size_t n, double p = 0.5);
 
     // O(N + M) complexity for sparse graphs
-    Graph generate_sparse_uniform(std::size_t n, double p);
+    Graph generate_sparse_uniform(std::size_t n, double c);
 
     // Barabási–Albert model for scale-free graphs (unbalanced)
     // n: total number of nodes
@@ -20,7 +20,7 @@ public:
 
     GraphCSR generate_uniform_csr(std::size_t n, double p);
 
-    GraphCSR generate_sparse_uniform_csr(std::size_t n, double p);
+    GraphCSR generate_sparse_uniform_csr(std::size_t n, double c);
 
     GraphCSR generate_scale_free_csr(
         std::size_t n,

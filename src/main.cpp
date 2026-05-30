@@ -12,6 +12,7 @@ struct Config {
     int nr_graphs = 5;
     int nr_runs = 10;
     std::size_t n = 5000000;
+    double c = 10.0;
     uint32_t base_seed = 42;
     bool verify = true;
     bool run_normal = false;
@@ -25,6 +26,7 @@ void print_usage(const char* prog_name) {
               << "  -g, --graphs <num>    Number of graphs to generate (default: 5)\n"
               << "  -r, --runs <num>      Number of runs per graph (default: 10)\n"
               << "  -n <num>              Number of nodes in the graph (default: 5000000)\n"
+              << "  -c <num>              Constant for sparse graph (edges = c*n) (default: 10.0)\n"
               << "  -v, --verify <bool>   Verify results (default: true)\n"
               << "  --normal              Run normal graph benchmarks\n"
               << "  --csr                 Run CSR graph benchmarks\n"
@@ -64,10 +66,10 @@ void run_normal_benchmarks(const Config& cfg) {
         return MISSolver<Graph>(g).find(Algorithm::LubyImproved);
     });
 
-    std::cout << "\nBenchmarking Uniform Sparse (n=" << cfg.n << ", p=0.0004)...\n";
+    std::cout << "\nBenchmarking Uniform Sparse (n=" << cfg.n << ", c=" << cfg.c << ")...\n";
     bench.run_suite("Uniform Sparse", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.generate_sparse_uniform_csr(cfg.n, 0.0004).to_adjacency_list();
+        return gen.generate_sparse_uniform_csr(cfg.n, cfg.c).to_adjacency_list();
     });
 
     std::cout << "\nBenchmarking Scale-Free (n=" << cfg.n << ", m0=10, m=5)...\n";
@@ -124,10 +126,10 @@ void run_csr_benchmarks(const Config& cfg) {
         return gen.generate_scale_free_csr(cfg.n, 10, 5);
     });
 
-    std::cout << "\nBenchmarking Uniform Sparse (csr) (n=" << cfg.n << ", p=0.0004)...\n";
+    std::cout << "\nBenchmarking Uniform Sparse (csr) (n=" << cfg.n << ", c=" << cfg.c << ")...\n";
     benchCSR.run_suite("Uniform Sparse_csr", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.generate_sparse_uniform_csr(cfg.n, 0.0004);
+        return gen.generate_sparse_uniform_csr(cfg.n, cfg.c);
     });
 
     benchCSR.print_results();
@@ -147,7 +149,7 @@ void run_weighted_benchmarks(const Config& cfg) {
     std::cout << "\nBenchmarking Weighted MIS (Uniform weights)...\n";
     benchWeighted.run_suite("Uniform Sparse (uniform)", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_uniform(gen.generate_sparse_uniform(cfg.n, 0.0004));
+        return gen.add_weights_uniform(gen.generate_sparse_uniform(cfg.n, cfg.c));
     });
     benchWeighted.run_suite("Scale-Free (uniform)", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
@@ -157,7 +159,7 @@ void run_weighted_benchmarks(const Config& cfg) {
     std::cout << "\nBenchmarking Weighted MIS (Exponential weights)...\n";
     benchWeighted.run_suite("Uniform Sparse (exp)", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_exp(gen.generate_sparse_uniform(cfg.n, 0.0004));
+        return gen.add_weights_exp(gen.generate_sparse_uniform(cfg.n, cfg.c));
     });
     benchWeighted.run_suite("Scale-Free (exp)", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
@@ -167,7 +169,7 @@ void run_weighted_benchmarks(const Config& cfg) {
     std::cout << "\nBenchmarking Weighted MIS (Clustered weights)...\n";
     benchWeighted.run_suite("Uniform Sparse (clustered)", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_clustered(gen.generate_sparse_uniform(cfg.n, 0.0004));
+        return gen.add_weights_clustered(gen.generate_sparse_uniform(cfg.n, cfg.c));
     });
     benchWeighted.run_suite("Scale-Free (clustered)", cfg.nr_graphs, [&](int i) {
         GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
@@ -188,6 +190,8 @@ int main(int argc, char* argv[]) {
             if (i + 1 < argc) cfg.nr_runs = std::stoi(argv[++i]);
         } else if (std::strcmp(argv[i], "-n") == 0) {
             if (i + 1 < argc) cfg.n = std::stoull(argv[++i]);
+        } else if (std::strcmp(argv[i], "-c") == 0) {
+            if (i + 1 < argc) cfg.c = std::stod(argv[++i]);
         } else if (std::strcmp(argv[i], "-v") == 0 || std::strcmp(argv[i], "--verify") == 0) {
             if (i + 1 < argc) cfg.verify = (std::string(argv[++i]) == "true" || argv[i][0] == '1');
         } else if (std::strcmp(argv[i], "--normal") == 0) {
@@ -223,6 +227,7 @@ int main(int argc, char* argv[]) {
               << "  Graphs:  " << cfg.nr_graphs << "\n"
               << "  Runs:    " << cfg.nr_runs << "\n"
               << "  Nodes:   " << cfg.n << "\n"
+              << "  C:       " << cfg.c << "\n"
               << "  Verify:  " << (cfg.verify ? "yes" : "no") << "\n\n";
 
     if (cfg.run_normal) {
