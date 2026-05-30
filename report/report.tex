@@ -112,12 +112,40 @@ We utilized OpenMP to parallelize Luby's algorithm on multi-core CPUs, given the
 \end{itemize}
 
 \subsection{Improved Luby's Algorithm}
-The "Luby Improved" version optimizes the base algorithm by addressing bottlenecks in workload distribution and memory access patterns. The key improvements include:
+The improved version refines the base parallel Luby algorithm by reducing synchronisation overhead,
+eliminating explicit random number generation, and exploiting locality more effectively.
+
+The key optimisations are:
 
 \begin{itemize}
-    \item \textbf{Active Node Vector}: Instead of iterating over all $N$ vertices in every round, we maintain a vector of \texttt{active\_nodes}.
-    \item \textbf{Dynamic Scheduling}: For the neighbor-checking phase, we use \texttt{schedule(dynamic, 32)} to balance load on irregular graphs.
-    \item \textbf{Efficient Filtering}: We use a parallel filter to construct the \texttt{active\_nodes} vector for subsequent rounds.
+    \item \textbf{Active Node Tracking}:
+        Instead of scanning the entire vertex set each round, a dedicated vector \texttt{active\_nodes}
+        stores only those vertices still eligible for the independent set.
+        After each round, survivors are compacted into a fresh list for the next iteration.
+
+    \item \textbf{Deterministic, On‑the‑Fly Priorities}:
+        Each vertex’s random priority is computed from the current round number and its own index
+        using a fast, splitmix64 hash function.
+        This avoids an expensive thread‑local RNG pass, eliminates the need for a global priority array,
+        and guarantees a reproducible pseudo‑random order without additional memory traffic.
+
+    \item \textbf{Unified Max‑Detection and Deactivation}:
+        The search for local maxima and the immediate deactivation of winners and their neighbours
+        are fused into a single parallel region.
+        This fusion halves the number of global barriers per round compared to the basic version,
+        reducing overhead.
+
+    \item \textbf{Dynamic Load Balancing}:
+        The neighbour‑checking loop uses \texttt{schedule(dynamic, 256)} to adapt to the
+        highly irregular degree distributions of scale‑free and other non‑uniform graphs.
+
+    \item \textbf{Thread‑Local Aggregation with Critical Merge}:
+        Both the newly selected independent set vertices and the surviving active nodes
+        are collected into thread‑local lists during their respective loops.
+        A single critical section per thread then appends the local results to a global
+        vector.
+        This pattern is used in the unified max‑detection/deactivation region (for MIS
+        additions) and again in the lightweight survivor compaction region.
 \end{itemize}
 
 \subsection{Luby GPU Implementation}
