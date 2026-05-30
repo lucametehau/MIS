@@ -1,0 +1,221 @@
+{
+  "output": "results/section4.csv",
+  "base_seed": 42,
+  "verify": false,
+  "cache_dir": "cache/graphs",
+  "experiments": [
+    {
+      "suite": "4",
+      "label": "uniform_5m_c5",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 5
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 8t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 8
+        },
+        {
+          "name": "Luby Improved 8t CSR",
+          "algorithm": "luby_improved",
+          "representation": "csr",
+          "threads": 8
+        }
+      ]
+    },
+    {
+      "suite": "4",
+      "label": "uniform_5m_c10",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 10
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 8t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 8
+        },
+        {
+          "name": "Luby Improved 8t CSR",
+          "algorithm": "luby_improved",
+          "representation": "csr",
+          "threads": 8
+        }
+      ]
+    },
+    {
+      "suite": "4",
+      "label": "uniform_5m_c20",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 20
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 8t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 8
+        },
+        {
+          "name": "Luby Improved 8t CSR",
+          "algorithm": "luby_improved",
+          "representation": "csr",
+          "threads": 8
+        }
+      ]
+    },
+    {
+      "suite": "4",
+      "label": "uniform_5m_c50",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 50
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 8t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 8
+        },
+        {
+          "name": "Luby Improved 8t CSR",
+          "algorithm": "luby_improved",
+          "representation": "csr",
+          "threads": 8
+        }
+      ]
+    },
+    {
+      "suite": "4",
+      "label": "scale_free_5m_m05_m3",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 5,
+        "m": 3
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 8t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 8
+        },
+        {
+          "name": "Luby Improved 8t CSR",
+          "algorithm": "luby_improved",
+          "representation": "csr",
+          "threads": 8
+        }
+      ]
+    },
+    {
+      "suite": "4",
+      "label": "scale_free_5m_m010_m5",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 10,
+        "m": 5
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 8t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 8
+        },
+        {
+          "name": "Luby Improved 8t CSR",
+          "algorithm": "luby_improved",
+          "representation": "csr",
+          "threads": 8
+        }
+      ]
+    },
+    {
+      "suite": "4",
+      "label": "scale_free_5m_m020_m10",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 20,
+        "m": 10
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 8t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 8
+        },
+        {
+          "name": "Luby Improved 8t CSR",
+          "algorithm": "luby_improved",
+          "representation": "csr",
+          "threads": 8
+        }
+      ]
+    }
+  ]
+}
