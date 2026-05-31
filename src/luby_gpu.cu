@@ -29,12 +29,12 @@ __global__ void select_assign_priorities_fused_candidates_kernel(
     int u = blockIdx.x * blockDim.x + threadIdx.x;
     if (u < n && is_active[u]) {
         bool is_max = true;
-        auto prio_u = hash_priority(u, iteration_num);
+        uint64_t prio_u = ((offsets[u+1] - offsets[u]) << 32) | hash_priority(u, iteration_num);
         
         for (auto i = offsets[u]; i < offsets[u+1]; i++) {
             auto v = edges[i];
             if (is_active[v]) {
-                auto prio_v = hash_priority(v, iteration_num);
+                uint64_t prio_v = ((offsets[v+1] - offsets[v]) << 32) | hash_priority(v, iteration_num);
                 if (prio_v > prio_u || (prio_v == prio_u && v > u)) {
                     is_max = false;
                     break;
