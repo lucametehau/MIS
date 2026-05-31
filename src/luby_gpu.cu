@@ -23,7 +23,7 @@ __global__ void init_states_kernel(uint8_t* is_active, uint8_t* in_mis, int n) {
 
 __global__ void select_assign_priorities_fused_candidates_kernel(
     const __restrict__ uint32_t* offsets, const __restrict__ Node* edges,
-    const __restrict__ uint8_t* is_active, uint8_t* candidates, 
+    const __restrict__ uint8_t* is_active, __restrict__ uint8_t* candidates, 
     int iteration_num, int n) 
 {
     int u = blockIdx.x * blockDim.x + threadIdx.x;
@@ -49,7 +49,7 @@ __global__ void select_assign_priorities_fused_candidates_kernel(
 
 __global__ void update_mis_and_active_kernel(
     const __restrict__ uint32_t* offsets, const __restrict__ Node* edges,
-    uint8_t* is_active, uint8_t* in_mis,
+    __restrict__ uint8_t* is_active, __restrict__ uint8_t* in_mis,
     const __restrict__ uint8_t* candidates, int* d_any_active, int n) 
 {
     int u = blockIdx.x * blockDim.x + threadIdx.x;
@@ -137,4 +137,8 @@ NodeList luby_gpu_mis(const GraphCSR& g) {
     cudaFree(d_any_active);
 
     return mis;
+}
+
+void warmup_gpu() {
+    cudaFree(0);
 }

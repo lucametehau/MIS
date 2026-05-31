@@ -111,6 +111,8 @@ void Benchmarker<GraphT>::run_suite(
                 times.push_back(
                     std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0
                 );
+
+                std::cout << times.back() << "\n";
             }
 
             if (verify_correctness_ && checker.check_mis(g, mis) != "MIS correct!") {

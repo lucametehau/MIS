@@ -88,25 +88,25 @@ void run_csr_benchmarks(const Config& cfg) {
         return MISSolver<GraphCSR>(g).find(Algorithm::Sequential);
     });
 
-    benchCSR.add_algorithm("Luby 1t CSR", [](const GraphCSR& g) {
-        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 1);
-    });
+    // benchCSR.add_algorithm("Luby 1t CSR", [](const GraphCSR& g) {
+    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 1);
+    // });
 
-    benchCSR.add_algorithm("Luby 2t CSR", [](const GraphCSR& g) {
-        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 2);
-    });
+    // benchCSR.add_algorithm("Luby 2t CSR", [](const GraphCSR& g) {
+    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 2);
+    // });
 
-    benchCSR.add_algorithm("Luby 4t CSR", [](const GraphCSR& g) {
-        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 4);
-    });
+    // benchCSR.add_algorithm("Luby 4t CSR", [](const GraphCSR& g) {
+    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 4);
+    // });
 
-    benchCSR.add_algorithm("Luby 8t CSR", [](const GraphCSR& g) {
-        return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 8);
-    });
+    // benchCSR.add_algorithm("Luby 8t CSR", [](const GraphCSR& g) {
+    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby, 8);
+    // });
 
-    benchCSR.add_algorithm("Luby CSR", [](const GraphCSR& g) {
-        return MISSolver<GraphCSR>(g).find(Algorithm::Luby);
-    });
+    // benchCSR.add_algorithm("Luby CSR", [](const GraphCSR& g) {
+    //     return MISSolver<GraphCSR>(g).find(Algorithm::Luby);
+    // });
 
     benchCSR.add_algorithm("Luby Improved CSR", [](const GraphCSR& g) {
         return MISSolver<GraphCSR>(g).find(Algorithm::LubyImproved);
@@ -235,6 +235,8 @@ int main(int argc, char* argv[]) {
     }
 
     if (cfg.run_csr) {
+        // warmup gpu before benchmarking, otherwise noisy
+        warmup_gpu();
         run_csr_benchmarks(cfg);
     }
 
