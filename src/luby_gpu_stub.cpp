@@ -14,6 +14,6 @@ NodeList luby_gpu_mis(const GraphCSR&) {
     no_cuda();
 }
 
-NodeList luby_gpu_mis2(const GraphCSR&) {
-    no_cuda();
-}
+// NodeList luby_gpu_mis2(const GraphCSR&) {
+//     no_cuda();
+// }

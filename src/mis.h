@@ -231,12 +231,12 @@ public:
                     throw std::runtime_error("Please use CSR for GPU version of Luby");
                 }
 
-            case Algorithm::LubyGPU2:
-                if constexpr (std::is_same_v<GraphT, GraphCSR>) {
-                    return luby_gpu_mis2(g_);
-                } else {
-                    throw std::runtime_error("Please use CSR for GPU version of Luby");
-                }
+            // case Algorithm::LubyGPU2:
+            //     if constexpr (std::is_same_v<GraphT, GraphCSR>) {
+            //         return luby_gpu_mis2(g_);
+            //     } else {
+            //         throw std::runtime_error("Please use CSR for GPU version of Luby");
+            //     }
         }
 
         return {};
