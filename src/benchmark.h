@@ -104,7 +104,7 @@ void Benchmarker<GraphT>::run_suite(
             NodeList mis;
 
             constexpr int warmup_runs = 2;
-            for (int run = 0; run < num_runs_; run++) {
+            for (int run = 0; run < warmup_runs; run++) {
                 mis = algo.solver(g);
                 if (verify_correctness_ && checker.check_mis(g, mis) != "MIS correct!") {
                     std::cerr << "CORRECTNESS FAILED: " << algo.name
