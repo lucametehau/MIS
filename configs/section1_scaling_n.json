@@ -21,16 +21,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -57,16 +57,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -92,16 +92,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -128,16 +128,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -163,16 +163,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -199,16 +199,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -234,16 +234,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -270,16 +270,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -305,16 +305,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -341,16 +341,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -376,16 +376,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
@@ -412,16 +412,16 @@
           "representation": "csr"
         },
         {
-          "name": "Luby 8t CSR",
+          "name": "Luby 16t CSR",
           "algorithm": "luby",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
-          "name": "Luby Improved 8t CSR",
+          "name": "Luby Improved 16t CSR",
           "algorithm": "luby_improved",
           "representation": "csr",
-          "threads": 8
+          "threads": 16
         },
         {
           "name": "Luby GPU CSR",
