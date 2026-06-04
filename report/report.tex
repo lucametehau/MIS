@@ -349,6 +349,19 @@ We also see that on Scale-Free graph types, the mean weight results are much clo
 
 We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
+\section{Conclusion}
+In this project, we evaluated multiple implementations of the Maximal Independent Set (MIS) algorithm, spanning sequential, multi-core CPU, and GPU architectures. Our results demonstrate that the choice of the optimal algorithm depends heavily on the graph topology, problem size, and hardware availability.
+
+Key findings include:
+\begin{itemize}
+    \item \textbf{Data Representation}: The Compressed Sparse Row (CSR) format is foundational for high-performance graph processing. It consistently outperformed the standard adjacency list by improving cache locality and reducing memory overhead, providing a significant speedup even for sequential execution.
+    \item \textbf{Parallel Efficiency}: While the base Luby's algorithm provides a theoretical parallel framework, its naive implementation suffers from significant overhead. Our \textit{Improved Luby} implementation, utilizing deterministic on-the-fly priorities and active node tracking, achieved substantial speedups on multi-core CPUs, particularly on large-scale irregular graphs where it often outperformed the GPU version due to better handling of workload imbalance.
+    \item \textbf{GPU Acceleration}: The CUDA-based implementation excels on large, dense graphs where the massive parallelism of the GPU can be fully leveraged. However, for smaller graphs or highly irregular scale-free networks, the overhead of kernel launches and memory latency can make CPU-based parallelization more competitive.
+    \item \textbf{Weighted MIS}: In the weighted variant, the Greedy approach demonstrated superior solution quality across all tested weight distributions. While randomized sampling offers a different trade-off, the greedy heuristic's ability to prioritize high-weight nodes makes it the preferred choice for applications where total weight is the primary metric.
+\end{itemize}
+
+Overall, the transition from sequential to optimized parallel implementations provides orders of magnitude improvement in performance, enabling the processing of graphs with tens of millions of vertices in under a second.
+
 \begin{thebibliography}{9}
 
     \bibitem{luby1986}
