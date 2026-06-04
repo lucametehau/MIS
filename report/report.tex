@@ -90,7 +90,7 @@ for (std::size_t i = 0; i < n; i++) {
 }
 \end{lstlisting}
 
-\subsection{Luby's Algorithm}
+\subsection{Luby's Algorithm \cite{luby1986}}
 Luby's algorithm is a randomized parallel algorithm for finding a Maximal Independent Set. It is designed to work in a synchronous, round-based manner, making it highly suitable for parallel architectures like multi-core CPUs (via OpenMP) and GPUs (via CUDA).
 
 The algorithm proceeds in discrete rounds, where each round consists of the following steps:
@@ -191,8 +191,8 @@ We first justify the use of the Compressed Sparse Row (CSR) representation. Tabl
         \midrule
         Sequential & Uniform Sparse & 6.1638 & 4.8709 \\
         Sequential & Scale-Free     & 5.4876 & 4.8984 \\
-        Luby 8t    & Uniform Sparse & 24.4400 & 16.5651 \\
-        Luby 8t    & Scale-Free     & 16.4970 & 12.0153 \\
+        Luby 8 threads    & Uniform Sparse & 24.4400 & 16.5651 \\
+        Luby 8 threads    & Scale-Free     & 16.4970 & 12.0153 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -215,7 +215,7 @@ We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $
     \label{tab:size_scaling}
     \begin{tabular}{l r r r r}
         \toprule
-        $N$ & Sequential (ms) & Luby 8t (ms) & Luby Improved 8t (ms) & Luby GPU (ms) \\
+        $N$ & Sequential (ms) & Luby 8 threads (ms) & Luby Improved 8 threads (ms) & Luby GPU (ms) \\
         \midrule
         \multicolumn{5}{c}{\textit{Uniform Sparse ($c=10$)}} \\
         $10^5$            & 0.4865   & 1.1145    & 0.8423   & 5.4047   \\
@@ -258,7 +258,7 @@ The degree distribution significantly impacts parallel performance. Table~\ref{t
     \label{tab:topology}
     \begin{tabular}{l r r r r}
         \toprule
-        Topology & Sequential (ms) & Luby 8t (ms) & Improved 8t (ms) & GPU (ms) \\
+        Topology & Sequential (ms) & Luby 8 threads (ms) & Improved 8 threads (ms) & GPU (ms) \\
         \midrule
         Uniform $c=5$  & 29.2268 & 97.3504  & 36.3811 & 43.9092  \\
         Uniform $c=50$ & 47.5770 & 183.4820 & 109.2180 & 307.4230 \\
@@ -350,6 +350,9 @@ We also see that on Scale-Free graph types, the mean weight results are much clo
 We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
 \begin{thebibliography}{9}
+
+    \bibitem{luby1986}
+    M. Luby. A simple parallel algorithm for the maximal independent set problem. SIAM Journal on Computing, 15(4):1036--1053, 1986.
 
     \bibitem{basagni2001}
     S. Basagni. Finding a maximal weighted independent set in wireless networks. Telecommunication Systems, 18(1–3):155–168, 2001. URL http://dx.doi.org/10.1023/A:1016747704458.
