@@ -1,0 +1,37 @@
+suite,label,algorithm,graph_family,n,c,m0,m,representation,threads,nr_graphs,nr_runs,mean_time_ms,graph_std_ms,mean_run_std_ms
+2,uniform_5m_c10,Luby 1t CSR,uniform_sparse,5000000,10,10,5,csr,1,10,5,497.46,11.2062,15.5363
+2,uniform_5m_c10,Luby Improved 1t CSR,uniform_sparse,5000000,10,10,5,csr,1,10,5,279.525,2.95507,9.10704
+2,uniform_5m_c10,Luby 2t CSR,uniform_sparse,5000000,10,10,5,csr,2,10,5,297.258,8.0701,8.75656
+2,uniform_5m_c10,Luby Improved 2t CSR,uniform_sparse,5000000,10,10,5,csr,2,10,5,148.325,0.326962,0.845829
+2,uniform_5m_c10,Luby 3t CSR,uniform_sparse,5000000,10,10,5,csr,3,10,5,225.838,1.2833,1.65582
+2,uniform_5m_c10,Luby Improved 3t CSR,uniform_sparse,5000000,10,10,5,csr,3,10,5,110.708,5.7041,1.46918
+2,uniform_5m_c10,Luby 4t CSR,uniform_sparse,5000000,10,10,5,csr,4,10,5,186.147,1.33459,1.41502
+2,uniform_5m_c10,Luby Improved 4t CSR,uniform_sparse,5000000,10,10,5,csr,4,10,5,83.6916,0.121113,0.668545
+2,uniform_5m_c10,Luby 6t CSR,uniform_sparse,5000000,10,10,5,csr,6,10,5,149.099,0.966056,1.952
+2,uniform_5m_c10,Luby Improved 6t CSR,uniform_sparse,5000000,10,10,5,csr,6,10,5,61.4116,0.268713,0.759829
+2,uniform_5m_c10,Luby 8t CSR,uniform_sparse,5000000,10,10,5,csr,8,10,5,131.349,0.447953,0.938315
+2,uniform_5m_c10,Luby Improved 8t CSR,uniform_sparse,5000000,10,10,5,csr,8,10,5,49.7451,0.498001,0.821005
+2,uniform_5m_c10,Luby 10t CSR,uniform_sparse,5000000,10,10,5,csr,10,10,5,134.654,2.39578,2.01531
+2,uniform_5m_c10,Luby Improved 10t CSR,uniform_sparse,5000000,10,10,5,csr,10,10,5,46.0003,0.0488512,0.767951
+2,uniform_5m_c10,Luby 12t CSR,uniform_sparse,5000000,10,10,5,csr,12,10,5,124.297,0.326053,1.31248
+2,uniform_5m_c10,Luby Improved 12t CSR,uniform_sparse,5000000,10,10,5,csr,12,10,5,43.5904,0.161057,0.746234
+2,uniform_5m_c10,Luby 16t CSR,uniform_sparse,5000000,10,10,5,csr,16,10,5,114.657,0.221443,0.760061
+2,uniform_5m_c10,Luby Improved 16t CSR,uniform_sparse,5000000,10,10,5,csr,16,10,5,39.7055,0.247423,0.0768671
+2,scale_free_5m,Luby 1t CSR,scale_free,5000000,10,10,5,csr,1,10,5,324.413,1.56406,1.53647
+2,scale_free_5m,Luby Improved 1t CSR,scale_free,5000000,10,10,5,csr,1,10,5,190.49,7.05381,4.11868
+2,scale_free_5m,Luby 2t CSR,scale_free,5000000,10,10,5,csr,2,10,5,207.893,0.953128,2.18731
+2,scale_free_5m,Luby Improved 2t CSR,scale_free,5000000,10,10,5,csr,2,10,5,106.842,0.326312,0.135902
+2,scale_free_5m,Luby 3t CSR,scale_free,5000000,10,10,5,csr,3,10,5,158.667,1.2537,1.27723
+2,scale_free_5m,Luby Improved 3t CSR,scale_free,5000000,10,10,5,csr,3,10,5,77.3224,1.22454,0.336592
+2,scale_free_5m,Luby 4t CSR,scale_free,5000000,10,10,5,csr,4,10,5,131.978,1.64289,1.58978
+2,scale_free_5m,Luby Improved 4t CSR,scale_free,5000000,10,10,5,csr,4,10,5,61.7659,1.63932,0.448733
+2,scale_free_5m,Luby 6t CSR,scale_free,5000000,10,10,5,csr,6,10,5,101.35,0.656395,0.623264
+2,scale_free_5m,Luby Improved 6t CSR,scale_free,5000000,10,10,5,csr,6,10,5,45.0479,1.54023,0.324903
+2,scale_free_5m,Luby 8t CSR,scale_free,5000000,10,10,5,csr,8,10,5,90.0331,0.605894,0.839282
+2,scale_free_5m,Luby Improved 8t CSR,scale_free,5000000,10,10,5,csr,8,10,5,36.4176,0.221847,0.200388
+2,scale_free_5m,Luby 10t CSR,scale_free,5000000,10,10,5,csr,10,10,5,89.6219,1.55075,0.627625
+2,scale_free_5m,Luby Improved 10t CSR,scale_free,5000000,10,10,5,csr,10,10,5,32.1569,0.256678,0.0319211
+2,scale_free_5m,Luby 12t CSR,scale_free,5000000,10,10,5,csr,12,10,5,84.8899,4.14048,0.967803
+2,scale_free_5m,Luby Improved 12t CSR,scale_free,5000000,10,10,5,csr,12,10,5,30.0715,0.178634,0.199604
+2,scale_free_5m,Luby 16t CSR,scale_free,5000000,10,10,5,csr,16,10,5,78.0513,3.51079,1.08864
+2,scale_free_5m,Luby Improved 16t CSR,scale_free,5000000,10,10,5,csr,16,10,5,27.7371,0.304935,0.125913
