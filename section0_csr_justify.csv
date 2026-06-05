@@ -1,0 +1,9 @@
+suite,label,algorithm,graph_family,n,c,m0,m,representation,threads,nr_graphs,nr_runs,mean_time_ms,graph_std_ms,mean_run_std_ms
+0,uniform_1m_c10,Sequential,uniform_sparse,1000000,10,10,5,adjacency,0,3,3,6.16378,0.281798,0.262198
+0,uniform_1m_c10,Sequential CSR,uniform_sparse,1000000,10,10,5,csr,0,3,3,4.87089,0.178415,0.24904
+0,uniform_1m_c10,Luby 8t,uniform_sparse,1000000,10,10,5,adjacency,8,3,3,24.44,2.22024,1.38617
+0,uniform_1m_c10,Luby 8t CSR,uniform_sparse,1000000,10,10,5,csr,8,3,3,16.5651,0.0481495,0.784994
+0,scale_free_1m,Sequential,scale_free,1000000,10,10,5,adjacency,0,3,3,5.48756,0.236292,0.162078
+0,scale_free_1m,Sequential CSR,scale_free,1000000,10,10,5,csr,0,3,3,4.89844,0.0983928,0.135105
+0,scale_free_1m,Luby 8t,scale_free,1000000,10,10,5,adjacency,8,3,3,16.497,0.477704,0.646903
+0,scale_free_1m,Luby 8t CSR,scale_free,1000000,10,10,5,csr,8,3,3,12.0153,0.0184481,0.454465

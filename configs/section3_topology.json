@@ -1,0 +1,218 @@
+{
+  "output": "results/section3.csv",
+  "base_seed": 42,
+  "verify": false,
+  "cache_dir": "cache/graphs",
+  "experiments": [
+    {
+      "suite": "3",
+      "label": "uniform_5m_c1",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 1
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "uniform_5m_c2",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 2
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "uniform_5m_c5",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 5
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "uniform_5m_c10",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 10
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "uniform_5m_c25",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 25
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "uniform_5m_c50",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 5000000,
+        "c": 50
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "scale_free_5m_m1",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 2,
+        "m": 1
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "scale_free_5m_m2",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 4,
+        "m": 2
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "scale_free_5m_m5",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 10,
+        "m": 5
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "scale_free_5m_m10",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 20,
+        "m": 10
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "scale_free_5m_m25",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 50,
+        "m": 25
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    },
+    {
+      "suite": "3",
+      "label": "scale_free_5m_m50",
+      "graph": {
+        "family": "scale_free",
+        "n": 5000000,
+        "m0": 100,
+        "m": 50
+      },
+      "nr_graphs": 10,
+      "nr_runs": 5,
+      "cases": [
+        { "name": "Sequential CSR", "algorithm": "sequential", "representation": "csr" },
+        { "name": "Luby 16t CSR", "algorithm": "luby", "representation": "csr", "threads": 16 },
+        { "name": "Luby Improved 16t CSR", "algorithm": "luby_improved", "representation": "csr", "threads": 16 },
+        { "name": "Luby GPU CSR", "algorithm": "luby_gpu", "representation": "csr" }
+      ]
+    }
+  ]
+}

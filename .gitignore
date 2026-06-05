@@ -3,9 +3,13 @@
 *.d
 obj/
 mis
+cache/
+results/
+!results/.gitkeep
 report/*.aux
 report/*latexmk
 report/*.fls
 report/*.log
 report/*gz
 *.txt
+*.pdf
