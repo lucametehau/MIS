@@ -32,7 +32,6 @@ inline AlgorithmId parse_algorithm(const std::string& s) {
     if (s == "luby") return {Algorithm::Luby, 0};
     if (s == "luby_improved") return {Algorithm::LubyImproved, 0};
     if (s == "luby_gpu") return {Algorithm::LubyGPU, 0};
-    if (s == "luby_gpu2") return {Algorithm::LubyGPU2, 0};
     throw std::runtime_error("unknown algorithm: " + s);
 }
 

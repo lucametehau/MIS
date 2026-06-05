@@ -73,6 +73,22 @@ BenchmarkCsvRow run_single_case_on_graphs(
         times.reserve(nr_runs);
         NodeList mis;
 
+        constexpr int warmup_runs = 2;
+        for (int run = 0; run < warmup_runs; run++) {
+            const auto start = std::chrono::high_resolution_clock::now();
+            mis = solver(g);
+            const auto end = std::chrono::high_resolution_clock::now();
+
+            if (verify) {
+                const auto verdict = checker.check_mis(g, mis);
+                if (verdict != "MIS correct!") {
+                    std::cerr << "CORRECTNESS FAILED: " << algorithm_name
+                            << " on graph #" << graph_idx
+                            << " — " << verdict << "\n";
+                }
+            }
+        }
+
         for (int run = 0; run < nr_runs; ++run) {
             const auto start = std::chrono::high_resolution_clock::now();
             mis = solver(g);

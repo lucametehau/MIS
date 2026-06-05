@@ -141,7 +141,6 @@ int run_from_config(const ConfigRunOptions& options) {
               << "  Graph×case cells: " << count_work(experiments) << "\n";
 
     if (options.dry_run) {
-        int cell = 0;
         for (const auto& exp : experiments) {
             std::cout << "\n[" << exp.suite << "] " << exp.label
                       << " (n=" << exp.graph.n
@@ -150,7 +149,6 @@ int run_from_config(const ConfigRunOptions& options) {
             for (const auto& c : exp.cases) {
                 std::cout << "  - " << c.name << " (" << representation_string(c.repr)
                           << ", threads=" << c.algo_id.threads << ")\n";
-                ++cell;
             }
         }
         std::cout << "\n[dry-run] Would execute " << count_work(experiments)
