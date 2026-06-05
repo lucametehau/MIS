@@ -263,6 +263,8 @@ void run_weighted_benchmarks(const LegacyConfig& cfg) {
     benchC.print_results();
 
     benchWeighted.print_results();
+    benchWeighted.write_csv("results/weighted_thread_scaling_and_quality.csv");
+    benchC.write_csv("results/weighted_density.csv");
 }
 
 int main(int argc, char* argv[]) {

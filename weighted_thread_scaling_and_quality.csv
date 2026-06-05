@@ -1,0 +1,61 @@
+algorithm,graph_type,mean_time_ms,graph_std_ms,mean_run_std_ms,mean_weight
+WGreedy Seq,Uniform Sparse (uniform),137.683,8.05366,9.25654,1.1409e+06
+WSampling Seq,Uniform Sparse (uniform),154.543,2.94315,9.81113,945195
+WGreedy 1t,Uniform Sparse (uniform),138.09,2.1553,9.67638,1.1409e+06
+WGreedy 2t,Uniform Sparse (uniform),97.7162,3.38609,11.1661,1.1409e+06
+WGreedy 3t,Uniform Sparse (uniform),75.1822,0.72044,10.5962,1.1409e+06
+WGreedy 4t,Uniform Sparse (uniform),63.5305,0.380176,10.6869,1.1409e+06
+WSampling 1t,Uniform Sparse (uniform),169.074,0.514004,10.4913,945175
+WSampling 2t,Uniform Sparse (uniform),110.485,0.442996,11.7091,945052
+WSampling 3t,Uniform Sparse (uniform),86.8614,1.2646,11.4832,945293
+WSampling 4t,Uniform Sparse (uniform),72.2694,0.846761,11.6491,945245
+WGreedy Seq,Scale-Free (uniform),67.9685,1.03245,1.261,2.22085e+06
+WSampling Seq,Scale-Free (uniform),91.9945,1.67383,1.57932,1.99878e+06
+WGreedy 1t,Scale-Free (uniform),73.1236,0.433465,0.805005,2.22085e+06
+WGreedy 2t,Scale-Free (uniform),46.5193,0.414929,1.40199,2.22085e+06
+WGreedy 3t,Scale-Free (uniform),36.5924,0.130224,0.844747,2.22085e+06
+WGreedy 4t,Scale-Free (uniform),31.5304,0.113813,0.82884,2.22085e+06
+WSampling 1t,Scale-Free (uniform),98.097,1.02939,1.98474,1.99841e+06
+WSampling 2t,Scale-Free (uniform),59.9583,0.49387,1.15286,1.99785e+06
+WSampling 3t,Scale-Free (uniform),46.0034,0.320821,1.23627,1.99811e+06
+WSampling 4t,Scale-Free (uniform),38.8335,0.165277,1.18999,1.99819e+06
+WGreedy Seq,Uniform Sparse (exp),129.703,0.465411,9.61074,760362
+WSampling Seq,Uniform Sparse (exp),150.252,0.565963,9.11001,552584
+WGreedy 1t,Uniform Sparse (exp),135.767,0.990526,10.2438,760362
+WGreedy 2t,Uniform Sparse (exp),94.3825,3.40454,10.9101,760362
+WGreedy 3t,Uniform Sparse (exp),74.7985,0.78598,10.7995,760362
+WGreedy 4t,Uniform Sparse (exp),62.9568,0.169921,10.6077,760362
+WSampling 1t,Uniform Sparse (exp),167.795,0.563899,10.7771,552413
+WSampling 2t,Uniform Sparse (exp),110.752,0.725346,12.0587,552736
+WSampling 3t,Uniform Sparse (exp),84.3882,0.710975,11.5643,552614
+WSampling 4t,Uniform Sparse (exp),71.8955,0.954246,11.6705,552612
+WGreedy Seq,Scale-Free (exp),67.5302,0.306586,0.738382,1.33812e+06
+WSampling Seq,Scale-Free (exp),91.3757,0.348398,0.868797,1.13308e+06
+WGreedy 1t,Scale-Free (exp),73.2689,0.478756,0.62686,1.33812e+06
+WGreedy 2t,Scale-Free (exp),46.8025,0.473645,1.24416,1.33812e+06
+WGreedy 3t,Scale-Free (exp),37.1453,0.920476,1.36795,1.33812e+06
+WGreedy 4t,Scale-Free (exp),32.0104,0.724809,1.24804,1.33812e+06
+WSampling 1t,Scale-Free (exp),97.1389,0.432776,0.996825,1.13334e+06
+WSampling 2t,Scale-Free (exp),60.0507,0.374629,1.05877,1.13316e+06
+WSampling 3t,Scale-Free (exp),45.8813,0.201304,1.30194,1.13306e+06
+WSampling 4t,Scale-Free (exp),39.0352,0.467425,1.58413,1.13321e+06
+WGreedy Seq,Uniform Sparse (clustered),128.43,0.789803,10.1418,646464
+WSampling Seq,Uniform Sparse (clustered),151.009,1.04811,9.36557,495353
+WGreedy 1t,Uniform Sparse (clustered),148.136,2.99607,9.60131,646464
+WGreedy 2t,Uniform Sparse (clustered),95.9542,5.05968,10.0711,646464
+WGreedy 3t,Uniform Sparse (clustered),73.0289,0.489563,9.80408,646464
+WGreedy 4t,Uniform Sparse (clustered),64.8613,0.359794,9.07487,646464
+WSampling 1t,Uniform Sparse (clustered),169.971,0.980296,10.462,495234
+WSampling 2t,Uniform Sparse (clustered),109.895,1.02218,11.0783,495105
+WSampling 3t,Uniform Sparse (clustered),84.6525,0.589502,11.6078,495318
+WSampling 4t,Uniform Sparse (clustered),72.291,1.34356,11.5065,495348
+WGreedy Seq,Scale-Free (clustered),47.4127,0.264864,1.00627,1.05192e+06
+WSampling Seq,Scale-Free (clustered),90.8317,0.221778,0.93123,877315
+WGreedy 1t,Scale-Free (clustered),56.8458,1.26531,1.45349,1.05192e+06
+WGreedy 2t,Scale-Free (clustered),35.5957,0.472992,2.06618,1.05192e+06
+WGreedy 3t,Scale-Free (clustered),27.9095,0.35553,1.65405,1.05192e+06
+WGreedy 4t,Scale-Free (clustered),24.1515,0.052097,1.24152,1.05192e+06
+WSampling 1t,Scale-Free (clustered),96.1897,0.348097,0.944775,877776
+WSampling 2t,Scale-Free (clustered),60.5203,0.756604,1.53808,877496
+WSampling 3t,Scale-Free (clustered),45.8297,0.0869566,1.19282,877543
+WSampling 4t,Scale-Free (clustered),38.6027,0.145538,1.20924,877752

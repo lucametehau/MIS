@@ -9,6 +9,7 @@
 #include <cmath>
 #include <utility>
 #include <type_traits>
+#include <fstream>
 #include "types.h"
 #include "mis_checker.h"
 #include "benchmark.h"
@@ -37,6 +38,8 @@ public:
     void run_suite(const std::string& graph_type, int num_graphs, GraphFactory&& make_graph);
 
     void print_results() const;
+
+    void write_csv(const std::string& path) const;
 
 private:
     int num_runs_;
@@ -148,4 +151,20 @@ void WeightedBenchmarker<GraphT>::print_results() const {
                   << "\n";
     }
     std::cout << std::setfill('=') << std::setw(table_width) << "" << std::setfill(' ') << "\n";
+}
+
+template<typename GraphT>
+void WeightedBenchmarker<GraphT>::write_csv(const std::string& path) const {
+    std::ofstream out(path, std::ios::app);
+    if (out.tellp() == 0) {
+        out << "algorithm,graph_type,mean_time_ms,graph_std_ms,mean_run_std_ms,mean_weight\n";
+    }
+    for (const auto& res : summaries_) {
+        out << res.algorithm_name << ","
+            << res.graph_type << ","
+            << res.mean_time_ms << ","
+            << res.graph_std_ms << ","
+            << res.mean_run_std_ms << ","
+            << res.mean_weight << "\n";
+    }
 }

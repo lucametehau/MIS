@@ -299,11 +299,11 @@ We recall that the standard Maximal Independent Set (MIS) is a subset of vertice
 We decided to study the performance of the following two algorithms, and then benchmark their performance based on the initial weight assignment. 
 
 \subsubsection{Algorithm 1: Weighted Greedy}
-A vertex $v$ is added to the MIS if and only if it has the highest weight among its active neighbors:
+A vertex $v$ is added to the MIS if and only if it has the highest weight among its active neighbors, with ties broken by vertex index:
 \begin{equation}
-  v \text{ wins} \iff w_v \geq w_u \quad \forall\, u \in N(v),\, u \text{ active}
+  v \text{ wins} \iff \forall\, u \in N(v) \text{ active}:\quad w_v > w_u \;\lor\; (w_v = w_u \,\land\, v < u)
 \end{equation}
-Ties are broken by vertex index. This approach is based on Basagni~\cite{basagni2001}.
+This approach is based on Basagni~\cite{basagni2001}.
 \subsubsection{Algorithm 2: Weighted Sampling}
 Each active vertex $v$ draws $U_v \sim \text{Uniform}(0,1)$ and computes a priority:
 \begin{equation}
@@ -317,50 +317,90 @@ Vertex $v$ wins the round if $p_v > p_u$ for all active neighbors $u$. That is, 
 \begin{equation}
   w_v \sim \text{Uniform}(1, 10)
 \end{equation}
-\textbf{Exponential:} Each vertex $v$ is assigned:
+\textbf{Exponential:} Each vertex $v$ is assigned: (the $+1$ shift ensures $w_v > 0$, which is required by the power trick in Algorithm 2.)
 \begin{equation}
   w_v = 1 + X, \quad X \sim \text{Exponential}(\lambda)
 \end{equation}
-The $+1$ shift ensures $w_v > 0$, which is required by the power trick in Algorithm 2.
-
 \textbf{Clustered:} A fraction $\rho = 0.1$ of vertices are randomly designated as hotspots:
 \begin{equation}
   w_v = \begin{cases} 10 & \text{with probability } \rho \\ 1 & \text{otherwise} \end{cases}
 \end{equation}
 
-\subsection{Experimental Results}
-The following results were captured from the weighted MIS benchmark suite ($N=1{,}000{,}000$, 5 graphs, 10 runs each).
+\subsection{Parallelization}
 
-\begin{center}
-\begin{tabular}{l l r r r r}
-\toprule
-Algorithm & Graph Type & Mean Time & Graph Std & Avg Run Std & Mean Weight \\
-\midrule
-Weighted Greedy   & Uniform Sparse (uniform)   & 48.346 ms  & 10.319 ms & 19.023 ms & 221{,}205.58 \\
-Weighted Sampling & Uniform Sparse (uniform)   & 101.725 ms & 62.736 ms & 86.907 ms & 169{,}862.79 \\
-Weighted Greedy   & Scale-Free (uniform)       & 34.835 ms  &  5.984 ms &  7.885 ms & 2{,}220{,}850.60 \\
-Weighted Sampling & Scale-Free (uniform)       & 65.297 ms  & 47.481 ms & 41.514 ms & 1{,}998{,}436.76 \\
-\midrule
-Weighted Greedy   & Uniform Sparse (exp)       & 44.856 ms  &  2.182 ms &  7.825 ms & 183{,}315.81 \\
-Weighted Sampling & Uniform Sparse (exp)       & 65.743 ms  & 33.578 ms & 24.710 ms & 102{,}926.19 \\
-Weighted Greedy   & Scale-Free (exp)           & 53.372 ms  & 44.933 ms & 35.131 ms & 1{,}338{,}124.13 \\
-Weighted Sampling & Scale-Free (exp)           & 40.659 ms  &  5.625 ms & 11.284 ms & 1{,}133{,}123.09 \\
-\midrule
-Weighted Greedy   & Uniform Sparse (clustered) & 63.872 ms  &  4.375 ms &  7.339 ms & 163{,}565.00 \\
-Weighted Sampling & Uniform Sparse (clustered) & 45.382 ms  &  3.298 ms &  5.214 ms & 107{,}985.08 \\
-Weighted Greedy   & Scale-Free (clustered)     & 41.219 ms  & 12.018 ms & 25.399 ms & 1{,}051{,}920.60 \\
-Weighted Sampling & Scale-Free (clustered)     & 62.458 ms  & 25.564 ms & 44.257 ms & 877{,}655.86 \\
-\bottomrule
-\end{tabular}
-\end{center}
+Both weighted algorithms weree parallelized using OpenMP, following the same structure as the unweighted Luby. Each round consists of a parallel local-maxima selection phase (the sampling algorithm also does a separate parallel priority-assignment phase before that). Thread-local vectors collect candidates, which are merged via a \texttt{critical} section. The \texttt{any\_active} check uses an OpenMP reduction. All benchmarks in this section were run on the Polytechnique machines, namely Intel Core i7-13700K (16 cores, 24 threads). Thread counts of 1, 2, 3, and 4 were evaluated for both algorithms. The sequential baselines are the same algorithms without parallelization.
+
+\subsection{Experimental Results}
+
+All benchmarks use $N=10^6$, 5 graphs, 10 runs each. Tables ~\ref{tab:weighted_thread_scaling} and ~\ref{tab:weighted_density} use uniform weights, while Table ~\ref{tab:weighted_quality} varies the weight distribution.
+
+\begin{table}[H]
+    \centering
+    \caption{Thread scaling for weighted algorithms ($N=10^6$, uniform weights, $c=10$)}
+    \label{tab:weighted_thread_scaling}
+    \small
+    \begin{tabular}{l r r r r r r r r}
+        \toprule
+        & \multicolumn{4}{c}{Weighted Greedy} & \multicolumn{4}{c}{Weighted Sampling} \\
+        \cmidrule(lr){2-5} \cmidrule(lr){6-9}
+        Threads & Unif (ms) & Speedup & SF (ms) & Speedup & Unif (ms) & Speedup & SF (ms) & Speedup \\
+        \midrule
+        Sequential & 137.7 & 1.00$\times$ & 68.0 & 1.00$\times$ & 154.5 & 1.00$\times$ & 92.0 & 1.00$\times$ \\
+        1          & 138.1 & 1.00$\times$ & 73.1 & 0.93$\times$ & 169.1 & 0.91$\times$ & 98.1 & 0.94$\times$ \\
+        2          & 97.7  & 1.41$\times$ & 46.5 & 1.46$\times$ & 110.5 & 1.40$\times$ & 60.0 & 1.53$\times$ \\
+        3          & 75.2  & 1.83$\times$ & 36.6 & 1.86$\times$ & 86.9  & 1.78$\times$ & 46.0 & 2.00$\times$ \\
+        4          & 63.5  & 2.17$\times$ & 31.5 & 2.16$\times$ & 72.3  & 2.14$\times$ & 38.8 & 2.37$\times$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Solution quality: mean MIS weight comparison across weight distributions ($N=10^6$, 4 threads)}
+    \label{tab:weighted_quality}
+    \begin{tabular}{l l r r r}
+        \toprule
+        Weight Distribution & Graph Type & WGreedy Weight & WSampling Weight & Greedy Advantage \\
+        \midrule
+        Uniform    & Uniform Sparse & 1{,}140{,}900 & 945{,}245     & +20.7\% \\
+        Uniform    & Scale-Free     & 2{,}220{,}850 & 1{,}998{,}190 & +11.1\% \\
+        \midrule
+        Exponential & Uniform Sparse & 760{,}362    & 552{,}612     & +37.6\% \\
+        Exponential & Scale-Free     & 1{,}338{,}120 & 1{,}133{,}210 & +18.1\% \\
+        \midrule
+        Clustered  & Uniform Sparse & 646{,}464     & 495{,}348     & +30.5\% \\
+        Clustered  & Scale-Free     & 1{,}051{,}920 & 877{,}752     & +19.8\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Effect of graph density on weighted MIS ($N=10^6$, Uniform Sparse, uniform weights)}
+    \label{tab:weighted_density}
+    \footnotesize
+    \begin{tabular}{r r r r r r r}
+        \toprule
+        $c$ & WGreedy Seq (ms) & WGreedy 4t (ms) & Speedup & WSampling Seq (ms) & WSampling 4t (ms) & Speedup \\
+        \midrule
+        2   & 54.2  & 25.7 & 2.11$\times$ & 75.9  & 32.5 & 2.34$\times$ \\
+        10  & 133.6 & 61.3 & 2.18$\times$ & 148.7 & 70.5 & 2.11$\times$ \\
+        50  & 195.5 & 69.4 & 2.82$\times$ & 204.2 & 77.6 & 2.63$\times$ \\
+        100 & 227.6 & 78.1 & 2.91$\times$ & 233.0 & 85.9 & 2.71$\times$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \subsection{Discussion}
 
-The results indicate that the Greedy approach consistently finds the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasionally make the algorithm give a low-weight neighboring vertex a higher priority, thus permanently excluding the high-weight vertex from the MIS selection.
+We first look at (Table~\ref{tab:weighted_quality}) to investigate the solutuiob quality. The results indicate that the Greedy approach consistently finds the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasionally make the algorithm give a low-weight neighboring vertex a higher priority, thus permanently excluding the high-weight vertex from the MIS selection.
+We also see that on Scale-Free graph types, the mean weight results are much closer than those on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 21--38\% on Uniform Sparse).
+We see that the exponential and clustered initial weight distributions improve greedy's advantage (38\% and 31\% gaps respectively on Uniform Sparse, vs.\ 21\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
-We also see that on Scale-Free graph types, the mean weight results are much closer than those on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 30--78\% on Uniform Sparse).
 
-We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
+As for parallelization,  (Table~\ref{tab:weighted_thread_scaling}), using 1 thread is slightly slower than the sequential baseline due to OpenMP overhead. We can see that both algorithms consistently scale as we increase the number of threds, both achieving roughly a 2x speedup at 4 threads. We can see that the speedup is sublinear, however, this is expected as because in the code each rounds inehrently has sequential parts. For instance, he critical-section merge of candidate vertices, and the serial deactivation of selected vertices and their neighbors.
+
+Finally, (Table~\ref{tab:weighted_density}) describes the density variation results. We can see that as we scale $c$, the absolute time increases for both algorithms, which is expected. However, the speedup improvecs with density from 2.1x to 2.9x as $c$ grows, since denser graphs give each thread more work to do, so the fixed cost of managing threads matters less.
 
 \section{Conclusion}
 In this project, we evaluated multiple implementations of the Maximal Independent Set (MIS) algorithm, spanning sequential, multi-core CPU, and GPU architectures. Our results demonstrate that the choice of the optimal algorithm depends heavily on the graph topology, problem size, and hardware availability.
@@ -370,7 +410,7 @@ Key findings include:
     \item \textbf{Data Representation}: The Compressed Sparse Row (CSR) format is foundational for high-performance graph processing. It consistently outperformed the standard adjacency list by improving cache locality and reducing memory overhead, providing a significant speedup even for sequential execution.
     \item \textbf{Parallel Efficiency}: While the base Luby's algorithm provides a theoretical parallel framework, its naive implementation suffers from significant overhead. Our \textit{Improved Luby} implementation, utilizing deterministic on-the-fly priorities and active node tracking, achieved substantial speedups on multi-core CPUs, particularly on large-scale irregular graphs where it often outperformed the GPU version due to better handling of workload imbalance.
     \item \textbf{GPU Acceleration}: The CUDA-based implementation excels on large, dense graphs where the massive parallelism of the GPU can be fully leveraged. However, for smaller graphs or highly irregular scale-free networks, the overhead of kernel launches and memory latency can make CPU-based parallelization more competitive.
-    \item \textbf{Weighted MIS}: In the weighted variant, the Greedy approach demonstrated superior solution quality across all tested weight distributions. While randomized sampling offers a different trade-off, the greedy heuristic's ability to prioritize high-weight nodes makes it the preferred choice for applications where total weight is the primary metric.
+    \item \textbf{Weighted MIS}: In the weighted variant, the Greedy approach demonstrated superior solution quality across all tested weight distributions. While randomized sampling offers a different trade-off, the greedy heuristic's ability to prioritize high-weight nodes makes it the preferred choice for applications where total weight is the primary metric. Both weighted algorithms also achieved roughly 2× speedup over their sequential baselines at four threads.
 \end{itemize}
 
 Overall, the transition from sequential to optimized parallel implementations provides orders of magnitude improvement in performance, enabling the processing of graphs with tens of millions of vertices in under a second.
