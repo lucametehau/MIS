@@ -26,7 +26,7 @@ This project explores high-performance parallel implementations of the Maximal I
 - `configs/`: JSON configuration files for various benchmark sections.
 - `report/`: LaTeX source for the performance report and generated figures.
 - `scripts/`: Helper scripts for running full benchmark suites.
-- `results/`: Output CSV files from benchmark runs (not committed).
+- `results/`: Output CSV files from benchmark runs.
 - `plot_benchmarks.py`: Tool for generating visualizations from CSV data.
 
 ## Getting Started
