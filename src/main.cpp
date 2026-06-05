@@ -198,73 +198,8 @@ void run_weighted_benchmarks(const LegacyConfig& cfg) {
     //     return weighted_sampling_mis(g);
     // });
 
-    std::cout << "\nBenchmarking Weighted MIS (Uniform weights)\n";
-    benchWeighted.run_suite("Uniform Sparse (uniform)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_uniform(gen.generate_sparse_uniform(cfg.n, cfg.c));
-    });
-    benchWeighted.run_suite("Scale-Free (uniform)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_uniform(gen.generate_scale_free(cfg.n, 10, 5));
-    });
-
-    std::cout << "\nBenchmarking Weighted MIS (Exponential weights)\n";
-    benchWeighted.run_suite("Uniform Sparse (exp)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_exp(gen.generate_sparse_uniform(cfg.n, cfg.c));
-    });
-    benchWeighted.run_suite("Scale-Free (exp)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_exp(gen.generate_scale_free(cfg.n, 10, 5));
-    });
-
-    std::cout << "\nBenchmarking Weighted MIS (Clustered weights)\n";
-    benchWeighted.run_suite("Uniform Sparse (clustered)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_clustered(gen.generate_sparse_uniform(cfg.n, cfg.c));
-    });
-    benchWeighted.run_suite("Scale-Free (clustered)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_clustered(gen.generate_scale_free(cfg.n, 10, 5));
-    });
-
-    std::cout << "\nBenchmarking Weighted MIS (varying density c, uniform weights)\n";
-    WeightedBenchmarker<WeightedGraph> benchC(cfg.nr_runs, false);
-    benchC.add_algorithm("WGreedy Seq", [](const WeightedGraph& g) {
-        return weighted_greedy_sequential_mis(g);
-    });
-    benchC.add_algorithm("WSampling Seq", [](const WeightedGraph& g) {
-        return weighted_sampling_sequential_mis(g);
-    });
-
-    // benchC.add_algorithm("WGreedy 16t", [](const WeightedGraph& g) {
-    //     omp_set_num_threads(16);
-    //     return weighted_greedy_mis(g);
-    // });
-    // benchC.add_algorithm("WSampling 16t", [](const WeightedGraph& g) {
-    //     omp_set_num_threads(16);
-    //     return weighted_sampling_mis(g);
-    // });
-
-    benchC.add_algorithm("WGreedy 4t", [](const WeightedGraph& g) {
-        omp_set_num_threads(4);
-        return weighted_greedy_mis(g);
-    });
-    benchC.add_algorithm("WSampling 4t", [](const WeightedGraph& g) {
-        omp_set_num_threads(4);
-        return weighted_sampling_mis(g);
-    });
-    for (double c_val : {2.0, 10.0, 50.0, 100.0}) {
-        benchC.run_suite("Uniform Sparse c=" + std::to_string((int)c_val), cfg.nr_graphs, [&](int i) {
-            GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-            return gen.add_weights_uniform(gen.generate_sparse_uniform(cfg.n, c_val));
-        });
-    }
-    benchC.print_results();
-
     benchWeighted.print_results();
     benchWeighted.write_csv("results/weighted_thread_scaling_and_quality.csv");
-    benchC.write_csv("results/weighted_density.csv");
 }
 
 int main(int argc, char* argv[]) {
