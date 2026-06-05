@@ -150,35 +150,51 @@ void run_weighted_benchmarks(const Config& cfg) {
         omp_set_num_threads(1);
         return weighted_greedy_mis(g);
     });
+    benchWeighted.add_algorithm("WGreedy 2t", [](const WeightedGraph& g) {
+        omp_set_num_threads(2);
+        return weighted_greedy_mis(g);
+    });
+    benchWeighted.add_algorithm("WGreedy 3t", [](const WeightedGraph& g) {
+        omp_set_num_threads(3);
+        return weighted_greedy_mis(g);
+    });
     benchWeighted.add_algorithm("WGreedy 4t", [](const WeightedGraph& g) {
         omp_set_num_threads(4);
         return weighted_greedy_mis(g);
     });
-    benchWeighted.add_algorithm("WGreedy 8t", [](const WeightedGraph& g) {
-        omp_set_num_threads(8);
-        return weighted_greedy_mis(g);
-    });
-    benchWeighted.add_algorithm("WGreedy 16t", [](const WeightedGraph& g) {
-        omp_set_num_threads(16);
-        return weighted_greedy_mis(g);
-    });
+    // benchWeighted.add_algorithm("WGreedy 8t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(8);
+    //     return weighted_greedy_mis(g);
+    // });
+    // benchWeighted.add_algorithm("WGreedy 16t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(16);
+    //     return weighted_greedy_mis(g);
+    // });
     
     benchWeighted.add_algorithm("WSampling 1t", [](const WeightedGraph& g) {
         omp_set_num_threads(1);
+        return weighted_sampling_mis(g);
+    });
+    benchWeighted.add_algorithm("WSampling 2t", [](const WeightedGraph& g) {
+        omp_set_num_threads(2);
+        return weighted_sampling_mis(g);
+    });
+    benchWeighted.add_algorithm("WSampling 3t", [](const WeightedGraph& g) {
+        omp_set_num_threads(3);
         return weighted_sampling_mis(g);
     });
     benchWeighted.add_algorithm("WSampling 4t", [](const WeightedGraph& g) {
         omp_set_num_threads(4);
         return weighted_sampling_mis(g);
     });
-    benchWeighted.add_algorithm("WSampling 8t", [](const WeightedGraph& g) {
-        omp_set_num_threads(8);
-        return weighted_sampling_mis(g);
-    });
-    benchWeighted.add_algorithm("WSampling 16t", [](const WeightedGraph& g) {
-        omp_set_num_threads(16);
-        return weighted_sampling_mis(g);
-    });
+    // benchWeighted.add_algorithm("WSampling 8t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(8);
+    //     return weighted_sampling_mis(g);
+    // });
+    // benchWeighted.add_algorithm("WSampling 16t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(16);
+    //     return weighted_sampling_mis(g);
+    // });
 
     std::cout << "\nBenchmarking Weighted MIS (Uniform weights)\n";
     benchWeighted.run_suite("Uniform Sparse (uniform)", cfg.nr_graphs, [&](int i) {
@@ -218,13 +234,22 @@ void run_weighted_benchmarks(const Config& cfg) {
     benchC.add_algorithm("WSampling Seq", [](const WeightedGraph& g) {
         return weighted_sampling_sequential_mis(g);
     });
-    
-    benchC.add_algorithm("WGreedy 16t", [](const WeightedGraph& g) {
-        omp_set_num_threads(16);
+
+    // benchC.add_algorithm("WGreedy 16t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(16);
+    //     return weighted_greedy_mis(g);
+    // });
+    // benchC.add_algorithm("WSampling 16t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(16);
+    //     return weighted_sampling_mis(g);
+    // });
+
+    benchC.add_algorithm("WGreedy 4t", [](const WeightedGraph& g) {
+        omp_set_num_threads(4);
         return weighted_greedy_mis(g);
     });
-    benchC.add_algorithm("WSampling 16t", [](const WeightedGraph& g) {
-        omp_set_num_threads(16);
+    benchC.add_algorithm("WSampling 4t", [](const WeightedGraph& g) {
+        omp_set_num_threads(4);
         return weighted_sampling_mis(g);
     });
     for (double c_val : {2.0, 10.0, 50.0, 100.0}) {
