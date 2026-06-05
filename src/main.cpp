@@ -140,45 +140,66 @@ void run_csr_benchmarks(const LegacyConfig& cfg) {
 void run_weighted_benchmarks(const LegacyConfig& cfg) {
     WeightedBenchmarker<WeightedGraph> benchWeighted(cfg.nr_runs, cfg.verify);
 
-    benchWeighted.add_algorithm("Weighted Greedy", [](const WeightedGraph& g) {
+    benchWeighted.add_algorithm("WGreedy Seq", [](const WeightedGraph& g) {
+        return weighted_greedy_sequential_mis(g);
+    });
+
+    benchWeighted.add_algorithm("WSampling Seq", [](const WeightedGraph& g) {
+        return weighted_sampling_sequential_mis(g);
+    });
+
+    benchWeighted.add_algorithm("WGreedy 1t", [](const WeightedGraph& g) {
+        omp_set_num_threads(1);
         return weighted_greedy_mis(g);
     });
-
-    benchWeighted.add_algorithm("Weighted Sampling", [](const WeightedGraph& g) {
+    benchWeighted.add_algorithm("WGreedy 2t", [](const WeightedGraph& g) {
+        omp_set_num_threads(2);
+        return weighted_greedy_mis(g);
+    });
+    benchWeighted.add_algorithm("WGreedy 3t", [](const WeightedGraph& g) {
+        omp_set_num_threads(3);
+        return weighted_greedy_mis(g);
+    });
+    benchWeighted.add_algorithm("WGreedy 4t", [](const WeightedGraph& g) {
+        omp_set_num_threads(4);
+        return weighted_greedy_mis(g);
+    });
+    // benchWeighted.add_algorithm("WGreedy 8t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(8);
+    //     return weighted_greedy_mis(g);
+    // });
+    // benchWeighted.add_algorithm("WGreedy 16t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(16);
+    //     return weighted_greedy_mis(g);
+    // });
+    
+    benchWeighted.add_algorithm("WSampling 1t", [](const WeightedGraph& g) {
+        omp_set_num_threads(1);
         return weighted_sampling_mis(g);
     });
-
-    std::cout << "\nBenchmarking Weighted MIS (Uniform weights)...\n";
-    benchWeighted.run_suite("Uniform Sparse (uniform)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_uniform(gen.generate_sparse_uniform(cfg.n, cfg.c));
+    benchWeighted.add_algorithm("WSampling 2t", [](const WeightedGraph& g) {
+        omp_set_num_threads(2);
+        return weighted_sampling_mis(g);
     });
-    benchWeighted.run_suite("Scale-Free (uniform)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_uniform(gen.generate_scale_free(cfg.n, 10, 5));
+    benchWeighted.add_algorithm("WSampling 3t", [](const WeightedGraph& g) {
+        omp_set_num_threads(3);
+        return weighted_sampling_mis(g);
     });
-
-    std::cout << "\nBenchmarking Weighted MIS (Exponential weights)...\n";
-    benchWeighted.run_suite("Uniform Sparse (exp)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_exp(gen.generate_sparse_uniform(cfg.n, cfg.c));
+    benchWeighted.add_algorithm("WSampling 4t", [](const WeightedGraph& g) {
+        omp_set_num_threads(4);
+        return weighted_sampling_mis(g);
     });
-    benchWeighted.run_suite("Scale-Free (exp)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_exp(gen.generate_scale_free(cfg.n, 10, 5));
-    });
-
-    std::cout << "\nBenchmarking Weighted MIS (Clustered weights)...\n";
-    benchWeighted.run_suite("Uniform Sparse (clustered)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_clustered(gen.generate_sparse_uniform(cfg.n, cfg.c));
-    });
-    benchWeighted.run_suite("Scale-Free (clustered)", cfg.nr_graphs, [&](int i) {
-        GraphGenerator gen(cfg.base_seed + static_cast<uint32_t>(i));
-        return gen.add_weights_clustered(gen.generate_scale_free(cfg.n, 10, 5));
-    });
+    // benchWeighted.add_algorithm("WSampling 8t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(8);
+    //     return weighted_sampling_mis(g);
+    // });
+    // benchWeighted.add_algorithm("WSampling 16t", [](const WeightedGraph& g) {
+    //     omp_set_num_threads(16);
+    //     return weighted_sampling_mis(g);
+    // });
 
     benchWeighted.print_results();
+    benchWeighted.write_csv("results/weighted_thread_scaling_and_quality.csv");
 }
 
 int main(int argc, char* argv[]) {

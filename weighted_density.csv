@@ -1,0 +1,17 @@
+algorithm,graph_type,mean_time_ms,graph_std_ms,mean_run_std_ms,mean_weight
+WGreedy Seq,Uniform Sparse c=2,54.2328,0.188939,1.84201,2.67932e+06
+WSampling Seq,Uniform Sparse c=2,75.9066,0.665026,2.0695,2.39453e+06
+WGreedy 4t,Uniform Sparse c=2,25.6695,0.19842,2.20823,2.67932e+06
+WSampling 4t,Uniform Sparse c=2,32.5351,0.313953,3.28976,2.39462e+06
+WGreedy Seq,Uniform Sparse c=10,133.635,7.30285,10.0584,1.1409e+06
+WSampling Seq,Uniform Sparse c=10,148.748,0.167728,9.26519,945063
+WGreedy 4t,Uniform Sparse c=10,61.3429,0.255685,9.30527,1.1409e+06
+WSampling 4t,Uniform Sparse c=10,70.5235,0.43817,10.9431,944765
+WGreedy Seq,Uniform Sparse c=50,195.545,3.54634,3.6945,375571
+WSampling Seq,Uniform Sparse c=50,204.238,1.09238,3.76039,293625
+WGreedy 4t,Uniform Sparse c=50,69.3751,0.450108,3.66169,375571
+WSampling 4t,Uniform Sparse c=50,77.6337,0.365184,4.18752,293674
+WGreedy Seq,Uniform Sparse c=100,227.628,3.22236,4.59715,221206
+WSampling Seq,Uniform Sparse c=100,233.014,2.47228,5.26483,169887
+WGreedy 4t,Uniform Sparse c=100,78.095,0.791349,4.94171,221206
+WSampling 4t,Uniform Sparse c=100,85.8559,0.14652,5.29548,169838
