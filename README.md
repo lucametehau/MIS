@@ -106,4 +106,4 @@ This produces two CSV files in `results/`:
 
 ## Acknowledgments
 
-This project utilizes the foundational work of Michael Luby on parallel randomized algorithms (1986).
+This project utilizes the foundational work of Michael Luby on parallel randomized algorithms (1986). We have also made use of AI for the boilerplate part of the project, such as this `README.md` or the benchmarking system.
