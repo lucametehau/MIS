@@ -84,16 +84,23 @@ Run simple benchmarks directly from the command line:
 Use `./mis --help` to see all available options.
 
 #### 4. Weighted MIS Benchmarks
-Run the weighted MIS benchmarks (thread scaling, solution quality, and density variation):
+Run the weighted MIS benchmarks (thread scaling and solution quality):
 
 ```bash
 mkdir -p results
 ./mis --weighted -n 1000000
 ```
 
-This produces two CSV files in `results/`:
-- `weighted_thread_scaling_and_quality.csv` — thread scaling (1–4 threads) and solution quality (mean MIS weight) across all weight distributions and graph types
-- `weighted_density.csv` — effect of graph density (c) on runtime and parallel speedup
+To reproduce the density variation results (varying `c`):
+
+```bash
+./mis --weighted -n 1000000 -c 2
+./mis --weighted -n 1000000 -c 10
+./mis --weighted -n 1000000 -c 50
+./mis --weighted -n 1000000 -c 100
+```
+
+Results are saved to `results/weighted_thread_scaling_and_quality.csv`. Pre-computed results are also available in `result/weighted_density.csv` and `result/weighted_thread_scaling_and_quality.csv`.
 
 ### Generating the Report
 
