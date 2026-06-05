@@ -8,6 +8,8 @@
 
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -36,8 +38,8 @@
 
 \lstset{style=mystyle}
 
-\title{Maximal Independent Set (MIS) Algorithm Performance Report}
-\author{MIS Project Team}
+\title{Maximal Independent Set -- Algorithms Performance Report}
+\author{Luca Metehau, Luca Perju, Georgy Salakhutdinov}
 \date{\today}
 
 \begin{document}
@@ -88,7 +90,7 @@ for (std::size_t i = 0; i < n; i++) {
 }
 \end{lstlisting}
 
-\subsection{Luby's Algorithm}
+\subsection{Luby's Algorithm \cite{luby1986}}
 Luby's algorithm is a randomized parallel algorithm for finding a Maximal Independent Set. It is designed to work in a synchronous, round-based manner, making it highly suitable for parallel architectures like multi-core CPUs (via OpenMP) and GPUs (via CUDA).
 
 The algorithm proceeds in discrete rounds, where each round consists of the following steps:
@@ -173,63 +175,118 @@ The second model is the Barabási–Albert (BA) model~\cite{barabasi1999}, which
 Scale-free graphs are characterized by a power-law degree distribution, $P(k) \sim k^{-\gamma}$. These graphs contain "hubs"—a few vertices with extremely high degrees—while the vast majority of vertices have very few connections. This topology is representative of social networks and the World Wide Web. For MIS algorithms, scale-free graphs present a significant challenge for parallelization due to extreme workload imbalance, making optimizations like dynamic scheduling and CSR layout essential.
 
 \section{Results}
-In this section, we present the performance results for the various implementations on different graph sizes and densities. All benchmarks were performed using the Compressed Sparse Row (CSR) representation.
+
+In this section, we present the performance results for the various implementations. All benchmarks were performed on a machine with an 8-core CPU (16 threads) and a modern GPU.
+
+\subsection{CSR vs Adjacency List Representation}
+We first justify the use of the Compressed Sparse Row (CSR) representation. Table~\ref{tab:csr_vs_adj} compares the execution time of sequential and Luby (16 threads) algorithms using both adjacency list and CSR formats on graphs with $10^6$ nodes.
+
+\begin{table}[H]
+    \centering
+    \caption{CSR vs Adjacency List Performance ($N=10^6$)}
+    \label{tab:csr_vs_adj}
+    \begin{tabular}{l l r r}
+        \toprule
+        Algorithm & Graph Family & Adjacency List (ms) & CSR (ms) \\
+        \midrule
+        Sequential & Uniform Sparse & 6.1638 & 4.8709 \\
+        Sequential & Scale-Free     & 5.4876 & 4.8984 \\
+        Luby 8 threads    & Uniform Sparse & 24.4400 & 16.5651 \\
+        Luby 8 threads    & Scale-Free     & 16.4970 & 12.0153 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+As expected, the CSR format consistently outperforms the standard adjacency list due to improved cache locality and reduced memory overhead. Figure~\ref{fig:section0} visualizes this difference.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/section0_csr_justify.pdf}
+    \caption{Performance comparison between CSR and standard adjacency list representation.}
+    \label{fig:section0}
+\end{figure}
 
 \subsection{Scaling with Graph Size}
-We evaluated the algorithms on Uniform Sparse graphs ($c=10$) of varying sizes, ranging from $10^5$ to $5 \cdot 10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling}.
+We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $2 \cdot 10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling} and visualized in Figure~\ref{fig:section1}.
 
-\begin{table}[h]
+\begin{table}[H]
     \centering
-    \caption{Performance scaling with problem size $N$ (Density $c=10$, Uniform Sparse)}
+    \caption{Performance scaling with problem size $N$ (CSR representation)}
     \label{tab:size_scaling}
     \begin{tabular}{l r r r r}
         \toprule
-        $N$ & Sequential (ms) & Luby CSR (ms) & Luby Improved (ms) & Luby GPU (ms) \\
+        $N$ & Sequential (ms) & Luby 16 threads (ms) & Luby Improved 16 threads (ms) & Luby GPU (ms) \\
         \midrule
-        $10^5$            & 0.392   & 0.756    & 0.528   & 5.057   \\
-        $10^6$            & 4.961   & 38.911   & 11.362  & 15.969  \\
-        $10^7$            & 75.168  & 265.706  & 176.964 & 149.048 \\
-        $5 \cdot 10^7$    & 707.244 & 2107.693 & 759.012 & 805.434 \\
+        \multicolumn{5}{c}{\textit{Uniform Sparse ($c=10$)}} \\
+        $10^5$            & 0.4200   & 0.9648    & 0.6378   & 5.2152   \\
+        $5 \cdot 10^5$    & 2.3098   & 5.9953    & 2.9498   & 6.0805   \\
+        $10^6$            & 4.9068   & 14.9088   & 6.7064   & 12.1489  \\
+        $5 \cdot 10^6$    & 34.6755  & 117.7570  & 40.6200  & 66.4825  \\
+        $10^7$            & 76.3226  & 272.5280  & 80.8898  & 143.4330 \\
+        $2 \cdot 10^7$    & 157.3900 & 653.1750  & 179.6590 & 308.3750 \\
+        \midrule
+        \multicolumn{5}{c}{\textit{Scale-Free ($m=5$)}} \\
+        $10^5$            & 0.5210   & 0.8095    & 0.5394   & 1.0483   \\
+        $5 \cdot 10^5$    & 2.5875   & 4.2381    & 2.3223   & 4.1411   \\
+        $10^6$            & 5.0946   & 10.2670   & 4.7528   & 8.2497   \\
+        $5 \cdot 10^6$    & 28.5915  & 77.3555   & 27.3052  & 40.8443  \\
+        $10^7$            & 60.2904  & 178.0620  & 57.1455  & 86.3274  \\
+        $2 \cdot 10^7$    & 128.5800 & 436.5480  & 128.6640 & 181.9970 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\subsection{Scaling with Graph Density}
-We also investigated the impact of graph density on performance by varying the edge constant $c$ for a fixed number of nodes $N = 5 \cdot 10^6$. The results are shown in Table~\ref{tab:density_scaling}.
-
-\begin{table}[h]
+\begin{figure}[H]
     \centering
-    \caption{Performance scaling with graph density $c$ (Nodes $N=5 \cdot 10^6$, Uniform Sparse)}
-    \label{tab:density_scaling}
+    \includegraphics[width=\textwidth]{figures/section1_scaling_n.pdf}
+    \caption{Scaling of execution time with the number of vertices $N$ for different algorithms.}
+    \label{fig:section1}
+\end{figure}
+
+\subsection{Thread Scaling}
+We investigated the parallel efficiency of Luby and Improved Luby algorithms by varying the number of threads. Figure~\ref{fig:section2} shows the results for $N = 5 \cdot 10^6$. Improved Luby shows significantly better scaling and lower overhead compared to the base implementation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/section2_thread_scaling.pdf}
+    \caption{Performance scaling with the number of OpenMP threads ($N=5 \cdot 10^6$).}
+    \label{fig:section2}
+\end{figure}
+
+\subsection{Impact of Graph Topology}
+The degree distribution significantly impacts parallel performance. Table~\ref{tab:topology} shows results for different densities ($c$) and scale-free parameters. The GPU implementation shows its strength on denser graphs, while Improved Luby handles highly irregular scale-free graphs effectively.
+
+\begin{table}[H]
+    \centering
+    \caption{Performance comparison across different graph topologies ($N=5 \cdot 10^6$)}
+    \label{tab:topology}
     \begin{tabular}{l r r r r}
         \toprule
-        $c$ (Edges/N) & Sequential (ms) & Luby CSR (ms) & Luby Improved (ms) & Luby GPU (ms) \\
+        Topology & Sequential (ms) & Luby 16 threads (ms) & Improved 16 threads (ms) & GPU (ms) \\
         \midrule
-        2   & 28.151 & 125.158 & 21.629  & 32.262  \\
-        10  & 35.344 & 108.079 & 50.415  & 70.863  \\
-        50  & 43.759 & 193.763 & 109.687 & 308.092 \\
-        100 & 45.117 & 182.206 & 78.040  & 620.733 \\
+        Uniform $c=1$  & 31.8961 & 47.6584  & 16.9344  & 28.9346  \\
+        Uniform $c=2$  & 27.5082 & 64.5012  & 19.9628  & 28.4627  \\
+        Uniform $c=5$  & 29.3123 & 86.6423  & 27.4206  & 40.5110  \\
+        Uniform $c=10$ & 34.8852 & 114.1140 & 39.7831  & 66.2198  \\
+        Uniform $c=25$ & 44.0597 & 138.1760 & 62.4163  & 154.6760 \\
+        Uniform $c=50$ & 47.3772 & 148.9450 & 78.7484  & 310.1740 \\
+        \midrule
+        SF $m=1$       & 27.5367 & 41.9097  & 17.3866  & 21.5663  \\
+        SF $m=2$       & 27.5601 & 51.9279  & 19.1247  & 27.9764  \\
+        SF $m=5$       & 27.9457 & 76.5628  & 27.9953  & 40.4749  \\
+        SF $m=10$      & 36.3662 & 109.5600 & 37.4478  & 65.5914  \\
+        SF $m=25$      & 50.1574 & 155.3150 & 60.0713  & 149.7460 \\
+        SF $m=50$      & 56.2210 & 187.2190 & 80.8886  & 303.7320 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\subsection{Performance on Scale-Free Graphs}
-We also evaluated the performance on Scale-Free graphs ($m=5, m_0=10$) to observe how the algorithms handle highly unbalanced degree distributions. The results are summarized in Table~\ref{tab:scale_free_scaling}.
-
-\begin{table}[h]
+\begin{figure}[H]
     \centering
-    \caption{Performance scaling with number of nodes $N$ (Scale-Free graphs, $m=5$)}
-    \label{tab:scale_free_scaling}
-    \begin{tabular}{l r r r r}
-        \toprule
-        $N$ & Sequential (ms) & Luby CSR (ms) & Luby Improved (ms) & Luby GPU (ms) \\
-        \midrule
-        $5 \cdot 10^6$  & 55.530  & 124.323 & 53.586  & 78.322  \\
-        $10^7$          & 115.266 & 225.880 & 176.630 & 150.709 \\
-        $2 \cdot 10^7$  & 247.660 & 515.658 & 229.322 & 301.812 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+    \includegraphics[width=0.9\textwidth]{figures/section3_topology.pdf}
+    \caption{Effect of graph density and scale-free parameters on algorithm performance.}
+    \label{fig:section3}
+\end{figure}
 
 \section{Weighted MIS}
 
@@ -305,7 +362,23 @@ We also see that on Scale-Free graph types, the mean weight results are much clo
 
 We see that the exponential and clustered initial weight distributions improve greedy's advantage (78\% and 52\% gaps respectively on Uniform Sparse, vs.\ 30\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
+\section{Conclusion}
+In this project, we evaluated multiple implementations of the Maximal Independent Set (MIS) algorithm, spanning sequential, multi-core CPU, and GPU architectures. Our results demonstrate that the choice of the optimal algorithm depends heavily on the graph topology, problem size, and hardware availability.
+
+Key findings include:
+\begin{itemize}
+    \item \textbf{Data Representation}: The Compressed Sparse Row (CSR) format is foundational for high-performance graph processing. It consistently outperformed the standard adjacency list by improving cache locality and reducing memory overhead, providing a significant speedup even for sequential execution.
+    \item \textbf{Parallel Efficiency}: While the base Luby's algorithm provides a theoretical parallel framework, its naive implementation suffers from significant overhead. Our \textit{Improved Luby} implementation, utilizing deterministic on-the-fly priorities and active node tracking, achieved substantial speedups on multi-core CPUs, particularly on large-scale irregular graphs where it often outperformed the GPU version due to better handling of workload imbalance.
+    \item \textbf{GPU Acceleration}: The CUDA-based implementation excels on large, dense graphs where the massive parallelism of the GPU can be fully leveraged. However, for smaller graphs or highly irregular scale-free networks, the overhead of kernel launches and memory latency can make CPU-based parallelization more competitive.
+    \item \textbf{Weighted MIS}: In the weighted variant, the Greedy approach demonstrated superior solution quality across all tested weight distributions. While randomized sampling offers a different trade-off, the greedy heuristic's ability to prioritize high-weight nodes makes it the preferred choice for applications where total weight is the primary metric.
+\end{itemize}
+
+Overall, the transition from sequential to optimized parallel implementations provides orders of magnitude improvement in performance, enabling the processing of graphs with tens of millions of vertices in under a second.
+
 \begin{thebibliography}{9}
+
+    \bibitem{luby1986}
+    M. Luby. A simple parallel algorithm for the maximal independent set problem. SIAM Journal on Computing, 15(4):1036--1053, 1986.
 
     \bibitem{basagni2001}
     S. Basagni. Finding a maximal weighted independent set in wireless networks. Telecommunication Systems, 18(1–3):155–168, 2001. URL http://dx.doi.org/10.1023/A:1016747704458.

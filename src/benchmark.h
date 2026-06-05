@@ -103,6 +103,16 @@ void Benchmarker<GraphT>::run_suite(
             times.reserve(num_runs_);
             NodeList mis;
 
+            constexpr int warmup_runs = 2;
+            for (int run = 0; run < warmup_runs; run++) {
+                mis = algo.solver(g);
+                if (verify_correctness_ && checker.check_mis(g, mis) != "MIS correct!") {
+                    std::cerr << "CORRECTNESS FAILED: " << algo.name
+                                << " on " << graph_type << " graph #" << graph_idx << "\n";
+                    std::cerr << "Reason: " << checker.check_mis(g, mis) << "\n";
+                }
+            }
+
             for (int run = 0; run < num_runs_; ++run) {
                 const auto start = std::chrono::high_resolution_clock::now();
                 mis = algo.solver(g);

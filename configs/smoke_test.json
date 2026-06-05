@@ -1,0 +1,32 @@
+{
+  "output": "results/smoke.csv",
+  "base_seed": 42,
+  "verify": true,
+  "cache_dir": "cache/graphs",
+  "experiments": [
+    {
+      "suite": "smoke",
+      "label": "uniform_10k_c10",
+      "graph": {
+        "family": "uniform_sparse",
+        "n": 10000,
+        "c": 10
+      },
+      "nr_graphs": 2,
+      "nr_runs": 2,
+      "cases": [
+        {
+          "name": "Sequential CSR",
+          "algorithm": "sequential",
+          "representation": "csr"
+        },
+        {
+          "name": "Luby 2t CSR",
+          "algorithm": "luby",
+          "representation": "csr",
+          "threads": 2
+        }
+      ]
+    }
+  ]
+}
