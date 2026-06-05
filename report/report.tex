@@ -179,7 +179,7 @@ Scale-free graphs are characterized by a power-law degree distribution, $P(k) \s
 In this section, we present the performance results for the various implementations. All benchmarks were performed on a machine with an 8-core CPU (16 threads) and a modern GPU.
 
 \subsection{CSR vs Adjacency List Representation}
-We first justify the use of the Compressed Sparse Row (CSR) representation. Table~\ref{tab:csr_vs_adj} compares the execution time of sequential and Luby (8 threads) algorithms using both adjacency list and CSR formats on graphs with $10^6$ nodes.
+We first justify the use of the Compressed Sparse Row (CSR) representation. Table~\ref{tab:csr_vs_adj} compares the execution time of sequential and Luby (16 threads) algorithms using both adjacency list and CSR formats on graphs with $10^6$ nodes.
 
 \begin{table}[H]
     \centering
@@ -207,7 +207,7 @@ As expected, the CSR format consistently outperforms the standard adjacency list
 \end{figure}
 
 \subsection{Scaling with Graph Size}
-We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling} and visualized in Figure~\ref{fig:section1}.
+We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $2 \cdot 10^7$ nodes. The results are summarized in Table~\ref{tab:size_scaling} and visualized in Figure~\ref{fig:section1}.
 
 \begin{table}[H]
     \centering
@@ -215,19 +215,23 @@ We evaluated the algorithms on graphs of varying sizes, ranging from $10^5$ to $
     \label{tab:size_scaling}
     \begin{tabular}{l r r r r}
         \toprule
-        $N$ & Sequential (ms) & Luby 8 threads (ms) & Luby Improved 8 threads (ms) & Luby GPU (ms) \\
+        $N$ & Sequential (ms) & Luby 16 threads (ms) & Luby Improved 16 threads (ms) & Luby GPU (ms) \\
         \midrule
         \multicolumn{5}{c}{\textit{Uniform Sparse ($c=10$)}} \\
-        $10^5$            & 0.4865   & 1.1145    & 0.8423   & 5.4047   \\
-        $10^6$            & 4.6451   & 15.7862   & 8.6779   & 11.8825  \\
-        $5 \cdot 10^6$    & 34.6515  & 129.2530  & 50.0654  & 65.3489  \\
-        $10^7$            & 74.8600  & 305.2400  & 103.2810 & 142.1110 \\
+        $10^5$            & 0.4200   & 0.9648    & 0.6378   & 5.2152   \\
+        $5 \cdot 10^5$    & 2.3098   & 5.9953    & 2.9498   & 6.0805   \\
+        $10^6$            & 4.9068   & 14.9088   & 6.7064   & 12.1489  \\
+        $5 \cdot 10^6$    & 34.6755  & 117.7570  & 40.6200  & 66.4825  \\
+        $10^7$            & 76.3226  & 272.5280  & 80.8898  & 143.4330 \\
+        $2 \cdot 10^7$    & 157.3900 & 653.1750  & 179.6590 & 308.3750 \\
         \midrule
         \multicolumn{5}{c}{\textit{Scale-Free ($m=5$)}} \\
-        $10^5$            & 0.4444   & 0.9787    & 0.7381   & 0.9870   \\
-        $10^6$            & 4.6395   & 11.4371   & 6.6997   & 7.8233   \\
-        $5 \cdot 10^6$    & 27.6094  & 87.2163   & 37.6498  & 39.9078  \\
-        $10^7$            & 60.4546  & 205.5430  & 78.0189  & 86.2039  \\
+        $10^5$            & 0.5210   & 0.8095    & 0.5394   & 1.0483   \\
+        $5 \cdot 10^5$    & 2.5875   & 4.2381    & 2.3223   & 4.1411   \\
+        $10^6$            & 5.0946   & 10.2670   & 4.7528   & 8.2497   \\
+        $5 \cdot 10^6$    & 28.5915  & 77.3555   & 27.3052  & 40.8443  \\
+        $10^7$            & 60.2904  & 178.0620  & 57.1455  & 86.3274  \\
+        $2 \cdot 10^7$    & 128.5800 & 436.5480  & 128.6640 & 181.9970 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -258,12 +262,21 @@ The degree distribution significantly impacts parallel performance. Table~\ref{t
     \label{tab:topology}
     \begin{tabular}{l r r r r}
         \toprule
-        Topology & Sequential (ms) & Luby 8 threads (ms) & Improved 8 threads (ms) & GPU (ms) \\
+        Topology & Sequential (ms) & Luby 16 threads (ms) & Improved 16 threads (ms) & GPU (ms) \\
         \midrule
-        Uniform $c=5$  & 29.2268 & 97.3504  & 36.3811 & 43.9092  \\
-        Uniform $c=50$ & 47.5770 & 183.4820 & 109.2180 & 307.4230 \\
-        SF $m=3$       & 26.4737 & 68.8808  & 29.3945  & 32.1546  \\
-        SF $m=10$      & 27.5487 & 86.3354  & 36.2805  & 39.8725  \\
+        Uniform $c=1$  & 31.8961 & 47.6584  & 16.9344  & 28.9346  \\
+        Uniform $c=2$  & 27.5082 & 64.5012  & 19.9628  & 28.4627  \\
+        Uniform $c=5$  & 29.3123 & 86.6423  & 27.4206  & 40.5110  \\
+        Uniform $c=10$ & 34.8852 & 114.1140 & 39.7831  & 66.2198  \\
+        Uniform $c=25$ & 44.0597 & 138.1760 & 62.4163  & 154.6760 \\
+        Uniform $c=50$ & 47.3772 & 148.9450 & 78.7484  & 310.1740 \\
+        \midrule
+        SF $m=1$       & 27.5367 & 41.9097  & 17.3866  & 21.5663  \\
+        SF $m=2$       & 27.5601 & 51.9279  & 19.1247  & 27.9764  \\
+        SF $m=5$       & 27.9457 & 76.5628  & 27.9953  & 40.4749  \\
+        SF $m=10$      & 36.3662 & 109.5600 & 37.4478  & 65.5914  \\
+        SF $m=25$      & 50.1574 & 155.3150 & 60.0713  & 149.7460 \\
+        SF $m=50$      & 56.2210 & 187.2190 & 80.8886  & 303.7320 \\
         \bottomrule
     \end{tabular}
 \end{table}

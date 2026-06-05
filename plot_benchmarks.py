@@ -16,10 +16,9 @@ DEFAULT_OUT = Path(__file__).resolve().parent / "report" / "figures"
 ALGO_COLORS = {
     "Sequential CSR": "#4C72B0",
     "Sequential": "#4C72B0",
-    "Luby 8t CSR": "#DD8452",
-    "Luby 8t": "#DD8452",
-    "Luby Improved 8t CSR": "#55A868",
-    "Luby Improved 8t CSR": "#55A868",
+    "Luby 16t CSR": "#DD8452",
+    "Luby 16t": "#DD8452",
+    "Luby Improved 16t CSR": "#55A868",
     "Luby GPU CSR": "#C44E52",
 }
 LUBY_COLOR = "#DD8452"
@@ -77,8 +76,8 @@ def plot_section1(df: pd.DataFrame, out_dir: Path) -> None:
         sub = df[df["graph_family"] == family]
         for algo, style in [
             ("Sequential CSR", {"marker": "o", "ls": "-"}),
-            ("Luby 8t CSR", {"marker": "s", "ls": "--"}),
-            ("Luby Improved 8t CSR", {"marker": "^", "ls": "-."}),
+            ("Luby 16t CSR", {"marker": "s", "ls": "--"}),
+            ("Luby Improved 16t CSR", {"marker": "^", "ls": "-."}),
             ("Luby GPU CSR", {"marker": "D", "ls": ":", "color": GPU_COLOR}),
         ]:
             rows = sub[sub["algorithm"] == algo].sort_values("n")
@@ -99,7 +98,7 @@ def plot_section1(df: pd.DataFrame, out_dir: Path) -> None:
         ax.set_title(title)
         ax.legend(fontsize=8)
         ax.grid(True, which="both", alpha=0.3)
-    fig.suptitle("§1: Scaling with $N$ (CSR, 8 threads)", fontsize=11)
+    fig.suptitle("§1: Scaling with $N$ (CSR, 16 threads)", fontsize=11)
     fig.tight_layout()
     save_fig(fig, out_dir, "section1_scaling_n")
 
@@ -160,8 +159,8 @@ def plot_topology(df: pd.DataFrame, out_dir: Path, stem: str, title: str) -> Non
         ("uniform_sparse", "Uniform sparse"),
         ("scale_free", "Scale-free"),
     ]
-    algos = ["Sequential CSR", "Luby 8t CSR", "Luby Improved 8t CSR", "Luby GPU CSR"]
-    short_names = ["Sequential", "Luby 8t", "Improved 8t", "GPU"]
+    algos = ["Sequential CSR", "Luby 16t CSR", "Luby Improved 16t CSR", "Luby GPU CSR"]
+    short_names = ["Sequential", "Luby 16t", "Improved 16t", "GPU"]
     x_offset = [-0.3, -0.1, 0.1, 0.3]
     width = 0.18
 
@@ -203,12 +202,9 @@ def _pretty_label(label: str) -> str:
     if "_c" in label and label.startswith("uniform"):
         c = label.rsplit("_c", 1)[-1]
         return f"$c={c}$"
-    if "m05_m3" in label:
-        return r"$m_0{=}5, m{=}3$"
-    if "m010_m5" in label:
-        return r"$m_0{=}10, m{=}5$"
-    if "m020_m10" in label:
-        return r"$m_0{=}20, m{=}10$"
+    if "_m" in label and label.startswith("scale_free"):
+        m = label.rsplit("_m", 1)[-1]
+        return f"$m={m}$"
     return label
 
 
@@ -249,7 +245,7 @@ def main() -> None:
             s3,
             args.out_dir,
             "section3_topology",
-            "§3: Graph topology ($N=5\\times10^6$, 8 threads)",
+            "§3: Graph topology ($N=5\\times10^6$, 16 threads)",
         )
 
     s4 = load_csv(args.results_dir, "section4_summary")
