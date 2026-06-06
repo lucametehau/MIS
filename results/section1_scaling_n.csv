@@ -1,0 +1,49 @@
+suite,label,algorithm,graph_family,n,c,m0,m,representation,threads,nr_graphs,nr_runs,mean_time_ms,graph_std_ms,mean_run_std_ms
+1,uniform_100000_c10,Sequential CSR,uniform_sparse,100000,10,10,5,csr,0,10,5,0.62894,0.429316,0.0687795
+1,uniform_100000_c10,Luby 16t CSR,uniform_sparse,100000,10,10,5,csr,16,10,5,1.30572,0.00594059,0.0113894
+1,uniform_100000_c10,Luby Improved 16t CSR,uniform_sparse,100000,10,10,5,csr,16,10,5,0.6031,0.0100617,0.00889999
+1,uniform_100000_c10,Luby GPU CSR,uniform_sparse,100000,10,10,5,csr,24,10,5,1.2517,0.0122896,0.00911157
+1,scale_free_100000,Sequential CSR,scale_free,100000,10,10,5,csr,0,10,5,0.56518,0.360976,0.0319862
+1,scale_free_100000,Luby 16t CSR,scale_free,100000,10,10,5,csr,16,10,5,0.83274,0.121648,0.0112426
+1,scale_free_100000,Luby Improved 16t CSR,scale_free,100000,10,10,5,csr,16,10,5,0.57592,0.00471989,0.00283887
+1,scale_free_100000,Luby GPU CSR,scale_free,100000,10,10,5,csr,24,10,5,0.9859,0.0523762,0.0126472
+1,uniform_500000_c10,Sequential CSR,uniform_sparse,500000,10,10,5,csr,0,10,5,1.86954,0.0261807,0.0443133
+1,uniform_500000_c10,Luby 16t CSR,uniform_sparse,500000,10,10,5,csr,16,10,5,8.13678,0.344102,0.160921
+1,uniform_500000_c10,Luby Improved 16t CSR,uniform_sparse,500000,10,10,5,csr,16,10,5,2.9312,0.0119852,0.00760258
+1,uniform_500000_c10,Luby GPU CSR,uniform_sparse,500000,10,10,5,csr,24,10,5,5.8633,0.0585632,0.0636848
+1,scale_free_500000,Sequential CSR,scale_free,500000,10,10,5,csr,0,10,5,2.16664,0.198106,0.118215
+1,scale_free_500000,Luby 16t CSR,scale_free,500000,10,10,5,csr,16,10,5,3.88424,0.103081,0.015251
+1,scale_free_500000,Luby Improved 16t CSR,scale_free,500000,10,10,5,csr,16,10,5,2.25052,0.0205528,0.00659867
+1,scale_free_500000,Luby GPU CSR,scale_free,500000,10,10,5,csr,24,10,5,3.75556,0.105629,0.0395698
+1,uniform_1000000_c10,Sequential CSR,uniform_sparse,1000000,10,10,5,csr,0,10,5,4.47254,0.0220738,0.0514596
+1,uniform_1000000_c10,Luby 16t CSR,uniform_sparse,1000000,10,10,5,csr,16,10,5,14.5033,0.0633171,0.0474924
+1,uniform_1000000_c10,Luby Improved 16t CSR,uniform_sparse,1000000,10,10,5,csr,16,10,5,6.50964,0.0175375,0.0131802
+1,uniform_1000000_c10,Luby GPU CSR,uniform_sparse,1000000,10,10,5,csr,24,10,5,11.9787,0.0166144,0.0371836
+1,scale_free_1000000,Sequential CSR,scale_free,1000000,10,10,5,csr,0,10,5,4.40664,0.0419837,0.0268473
+1,scale_free_1000000,Luby 16t CSR,scale_free,1000000,10,10,5,csr,16,10,5,9.4652,0.0759258,0.0394803
+1,scale_free_1000000,Luby Improved 16t CSR,scale_free,1000000,10,10,5,csr,16,10,5,4.56478,0.0108376,0.0109089
+1,scale_free_1000000,Luby GPU CSR,scale_free,1000000,10,10,5,csr,24,10,5,7.72624,0.0734838,0.0662928
+1,uniform_5000000_c10,Sequential CSR,uniform_sparse,5000000,10,10,5,csr,0,10,5,34.4547,0.210778,0.155375
+1,uniform_5000000_c10,Luby 16t CSR,uniform_sparse,5000000,10,10,5,csr,16,10,5,114.292,0.412958,0.603495
+1,uniform_5000000_c10,Luby Improved 16t CSR,uniform_sparse,5000000,10,10,5,csr,16,10,5,40.4279,0.0505558,0.141793
+1,uniform_5000000_c10,Luby GPU CSR,uniform_sparse,5000000,10,10,5,csr,24,10,5,66.2989,0.0978541,0.125244
+1,scale_free_5000000,Sequential CSR,scale_free,5000000,10,10,5,csr,0,10,5,27.0971,0.126431,0.124609
+1,scale_free_5000000,Luby 16t CSR,scale_free,5000000,10,10,5,csr,16,10,5,76.0653,0.41978,0.210553
+1,scale_free_5000000,Luby Improved 16t CSR,scale_free,5000000,10,10,5,csr,16,10,5,26.8643,0.0538801,0.114148
+1,scale_free_5000000,Luby GPU CSR,scale_free,5000000,10,10,5,csr,24,10,5,40.2533,0.126849,0.0985465
+1,uniform_10000000_c10,Sequential CSR,uniform_sparse,10000000,10,10,5,csr,0,5,3,74.9829,0.0791326,0.11166
+1,uniform_10000000_c10,Luby 16t CSR,uniform_sparse,10000000,10,10,5,csr,16,5,3,277.738,0.377813,2.3357
+1,uniform_10000000_c10,Luby Improved 16t CSR,uniform_sparse,10000000,10,10,5,csr,16,5,3,80.3756,0.116442,0.10794
+1,uniform_10000000_c10,Luby GPU CSR,uniform_sparse,10000000,10,10,5,csr,24,5,3,144.853,0.27284,0.215216
+1,scale_free_10000000,Sequential CSR,scale_free,10000000,10,10,5,csr,0,5,3,58.8523,0.139232,0.155286
+1,scale_free_10000000,Luby 16t CSR,scale_free,10000000,10,10,5,csr,16,5,3,190.833,6.71268,3.30327
+1,scale_free_10000000,Luby Improved 16t CSR,scale_free,10000000,10,10,5,csr,16,5,3,55.7113,0.0489813,0.0950449
+1,scale_free_10000000,Luby GPU CSR,scale_free,10000000,10,10,5,csr,24,5,3,85.801,0.0456934,0.0573357
+1,uniform_20000000_c10,Sequential CSR,uniform_sparse,20000000,10,10,5,csr,0,5,3,183.119,0.525528,0.648199
+1,uniform_20000000_c10,Luby 16t CSR,uniform_sparse,20000000,10,10,5,csr,16,5,3,693.47,6.39341,4.31558
+1,uniform_20000000_c10,Luby Improved 16t CSR,uniform_sparse,20000000,10,10,5,csr,16,5,3,189.33,0.455405,0.527467
+1,uniform_20000000_c10,Luby GPU CSR,uniform_sparse,20000000,10,10,5,csr,24,5,3,309.916,0.175785,0.149866
+1,scale_free_20000000,Sequential CSR,scale_free,20000000,10,10,5,csr,0,5,3,125.214,0.0891791,0.1362
+1,scale_free_20000000,Luby 16t CSR,scale_free,20000000,10,10,5,csr,16,5,3,446.549,3.21978,9.52733
+1,scale_free_20000000,Luby Improved 16t CSR,scale_free,20000000,10,10,5,csr,16,5,3,125.114,0.279501,0.270771
+1,scale_free_20000000,Luby GPU CSR,scale_free,20000000,10,10,5,csr,24,5,3,182.602,0.0847239,0.0760161

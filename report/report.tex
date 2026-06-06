@@ -264,19 +264,19 @@ The degree distribution significantly impacts parallel performance. Table~\ref{t
         \toprule
         Topology & Sequential (ms) & Luby 16 threads (ms) & Improved 16 threads (ms) & GPU (ms) \\
         \midrule
-        Uniform $c=1$  & 31.8961 & 47.6584  & 16.9344  & 28.9346  \\
-        Uniform $c=2$  & 27.5082 & 64.5012  & 19.9628  & 28.4627  \\
-        Uniform $c=5$  & 29.3123 & 86.6423  & 27.4206  & 40.5110  \\
-        Uniform $c=10$ & 34.8852 & 114.1140 & 39.7831  & 66.2198  \\
-        Uniform $c=25$ & 44.0597 & 138.1760 & 62.4163  & 154.6760 \\
-        Uniform $c=50$ & 47.3772 & 148.9450 & 78.7484  & 310.1740 \\
+        Uniform $c=1$  & 29.8218 & 46.3624  & 16.4497  & 23.4822  \\
+        Uniform $c=2$  & 26.3609 & 64.8497  & 21.6166  & 27.5941  \\
+        Uniform $c=5$  & 25.2983 & 86.5670  & 28.0894  & 41.1139  \\
+        Uniform $c=10$ & 33.9616 & 115.7430 & 40.2445  & 66.1806  \\
+        Uniform $c=25$ & 43.2695 & 141.2790 & 63.0361  & 153.0760 \\
+        Uniform $c=50$ & 46.6314 & 151.6660 & 78.6806  & 306.6160 \\
         \midrule
-        SF $m=1$       & 27.5367 & 41.9097  & 17.3866  & 21.5663  \\
-        SF $m=2$       & 27.5601 & 51.9279  & 19.1247  & 27.9764  \\
-        SF $m=5$       & 27.9457 & 76.5628  & 27.9953  & 40.4749  \\
-        SF $m=10$      & 36.3662 & 109.5600 & 37.4478  & 65.5914  \\
-        SF $m=25$      & 50.1574 & 155.3150 & 60.0713  & 149.7460 \\
-        SF $m=50$      & 56.2210 & 187.2190 & 80.8886  & 303.7320 \\
+        SF $m=1$       & 26.5591 & 40.0790  & 16.2432  & 20.1628  \\
+        SF $m=2$       & 26.0787 & 51.2037  & 18.8560  & 26.8340  \\
+        SF $m=5$       & 27.6661 & 76.4741  & 27.0214  & 40.3522  \\
+        SF $m=10$      & 35.5869 & 107.2000 & 37.2679  & 64.9956  \\
+        SF $m=25$      & 49.1104 & 156.2280 & 59.8320  & 147.9760 \\
+        SF $m=50$      & 54.3067 & 191.3050 & 80.5604  & 300.6530 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -430,7 +430,7 @@ All benchmarks use $N=10^6$, 5 graphs, 10 runs each. Tables ~\ref{tab:weighted_t
 
 \subsection{Discussion}
 
-We first look at (Table~\ref{tab:weighted_quality}) to investigate the solutuiob quality. The results indicate that the Greedy approach consistently finds the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasionally make the algorithm give a low-weight neighboring vertex a higher priority, thus permanently excluding the high-weight vertex from the MIS selection.
+We first look at (Table~\ref{tab:weighted_quality}) to investigate the solution quality. The results indicate that the Greedy approach consistently finds the MIS with higher total weight across all graph types and initial weight distributions. This can be explained by the fact that stochastic sampling can occasionally make the algorithm give a low-weight neighboring vertex a higher priority, thus permanently excluding the high-weight vertex from the MIS selection.
 We also see that on Scale-Free graph types, the mean weight results are much closer than those on the Uniform-Sparse graph types (gap of 11--20\% on Scale-Free vs.\ 21--38\% on Uniform Sparse).
 We see that the exponential and clustered initial weight distributions improve greedy's advantage (38\% and 31\% gaps respectively on Uniform Sparse, vs.\ 21\% for uniform weights). The reason for this is that in these settings, we have relatively fewer very high-weight vertices, and the greedy approach always captures them. Meanwhile, the sampling approach may exclude them in case a low-weight vertex is selected instead at random.
 
@@ -440,17 +440,25 @@ As for parallelization,  (Table~\ref{tab:weighted_thread_scaling}), using 1 thre
 Finally, (Table~\ref{tab:weighted_density}) describes the density variation results. We can see that as we scale $c$, the absolute time increases for both algorithms, which is expected. However, the speedup improvecs with density from 2.1x to 2.9x as $c$ grows, since denser graphs give each thread more work to do, so the fixed cost of managing threads matters less.
 
 \section{Conclusion}
-In this project, we evaluated multiple implementations of the Maximal Independent Set (MIS) algorithm, spanning sequential, multi-core CPU, and GPU architectures. Our results demonstrate that the choice of the optimal algorithm depends heavily on the graph topology, problem size, and hardware availability.
+In this project, we evaluated multiple implementations of the Maximal Independent Set (MIS) algorithm across CPU and GPU architectures. Our results demonstrate that the optimal choice depends heavily on graph scale and topology.
 
 Key findings include:
 \begin{itemize}
-    \item \textbf{Data Representation}: The Compressed Sparse Row (CSR) format is foundational for high-performance graph processing. It consistently outperformed the standard adjacency list by improving cache locality and reducing memory overhead, providing a significant speedup even for sequential execution.
-    \item \textbf{Parallel Efficiency}: While the base Luby's algorithm provides a theoretical parallel framework, its naive implementation suffers from significant overhead. Our \textit{Improved Luby} implementation, utilizing deterministic on-the-fly priorities and active node tracking, achieved substantial speedups on multi-core CPUs, particularly on large-scale irregular graphs where it often outperformed the GPU version due to better handling of workload imbalance.
-    \item \textbf{GPU Acceleration}: The CUDA-based implementation excels on large, dense graphs where the massive parallelism of the GPU can be fully leveraged. However, for smaller graphs or highly irregular scale-free networks, the overhead of kernel launches and memory latency can make CPU-based parallelization more competitive.
-    \item \textbf{Weighted MIS}: In the weighted variant, the Greedy approach demonstrated superior solution quality across all tested weight distributions. While randomized sampling offers a different trade-off, the greedy heuristic's ability to prioritize high-weight nodes makes it the preferred choice for applications where total weight is the primary metric. Both weighted algorithms also achieved roughly 2× speedup over their sequential baselines at four threads.
+    \item \textbf{The Sequential Algorithm}: For smaller graphs ($N < 10^6$), the sequential greedy algorithm is remarkably difficult to beat due to its lack of synchronization overhead and excellent cache locality when paired with a CSR representation. Parallelization only becomes beneficial as the workload per round grows significantly.
+    \item \textbf{Luby's Algorithm}: The base Luby implementation is often bottlenecked by synchronization and RNG overhead. 
+    However, our \textit{Improved Luby} variant, using deterministic hashing and active-node tracking, consistently achieves speedups on sparse graphs, 
+    outperforming sequential execution for very sparse graphs, that is $c\leq5$, but also closely matching the sequenttial performance for $N \geq 2 \cdot 10^7$ and 
+    handling irregular scale-free hubs more gracefully than other parallel approaches.
+    \item \textbf{GPU Acceleration}: Contrary to common expectations for data-parallel workloads, 
+    the GPU implementation in this study performs best on \textit{very sparse} graphs. 
+    For $N = 5 \cdot 10^6$ and $c\leq2$, the GPU outperforms or is the same as the sequential baseline. 
+    However, as density increases, GPU performance degrades linearly, with $c$, becoming nearly an order of magnitude slower than the CPU on dense graphs ($c=50$). 
+    This is likely due to increased warp divergence and memory contention when processing longer adjacency lists in parallel.
+    \item \textbf{Weighted Heuristics}: The Greedy weighted MIS consistently provides higher-quality solutions (up to 38\% more total weight) than randomized sampling. Both weighted variants scale well, achieving a $\sim$2$\times$ speedup with 4 threads on modern multi-core hardware.
+    \item \textbf{Representation}: The transition from adjacency lists to Compressed Sparse Row (CSR) is the single most important optimization, providing a 20-30\% speedup even for sequential code by improving memory contiguity.
 \end{itemize}
 
-Overall, the transition from sequential to optimized parallel implementations provides orders of magnitude improvement in performance, enabling the processing of graphs with tens of millions of vertices in under a second.
+In summary, while the GPU provides speedups on extremely sparse graphs, our optimized multi-core CPU implementation (Improved Luby) offers the best balance of performance and robustness across the widest range of graph scales and topologies.
 
 \begin{thebibliography}{9}
 
