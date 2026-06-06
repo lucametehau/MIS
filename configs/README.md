@@ -72,7 +72,7 @@ Pre-warm graph cache before long runs:
 | `section1_scaling_n.json` | §1 scaling with N |
 | `section2_thread_scaling.json` | §2 thread scaling |
 | `section3_topology.json` | §3 graph topology |
-| `section4_summary.json` | §4 single-run (§3 topologies, 50 graphs, 1 run, no per-graph warmup) |
+| `section4_single_run.json` | §4 single-run stream (§3 topologies, 50 graphs, 1 run, no per-graph warmup) |
 | `smoke_test.json` | Small sanity check |
 
 ## CSV columns

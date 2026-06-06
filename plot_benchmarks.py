@@ -248,13 +248,13 @@ def main() -> None:
             "§3: Graph topology ($N=5\\times10^6$, 16 threads)",
         )
 
-    s4 = load_csv(args.results_dir, "section4_summary")
+    s4 = load_csv(args.results_dir, "section4_single_run")
     if s4 is not None:
         plot_topology(
             s4,
             args.out_dir,
-            "section4_summary",
-            "§4: Single-run ($N=5\\times10^6$, 50 graphs, 16 threads)",
+            "section4_single_run",
+            "§4: Single-run stream ($N=5\\times10^6$, 50 graphs, 16 threads)",
         )
     print("Done.")
 

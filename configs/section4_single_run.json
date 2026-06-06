@@ -1,5 +1,5 @@
 {
-  "output": "results/section4.csv",
+  "output": "results/section4_single_run.csv",
   "base_seed": 42,
   "verify": false,
   "cache_dir": "cache/graphs",

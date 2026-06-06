@@ -9,7 +9,7 @@ configs=(
     configs/section1_scaling_n.json
     configs/section2_thread_scaling.json
     configs/section3_topology.json
-    configs/section4_summary.json
+    configs/section4_single_run.json
 )
 
 ts="$(date +%Y-%m-%d_%H%M)"

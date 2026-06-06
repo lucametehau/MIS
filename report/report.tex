@@ -288,6 +288,43 @@ The degree distribution significantly impacts parallel performance. Table~\ref{t
     \label{fig:section3}
 \end{figure}
 
+\subsection{Single-Run Stream Benchmark}
+The benchmarks in the preceding sections repeat each MIS computation several times per graph instance, with additional warmup runs, to reduce measurement variance. While this yields stable averages, it does not reflect a common deployment scenario: processing a continuous stream of distinct graphs, computing MIS exactly once per graph. To capture this workload, we ran a complementary benchmark over the same twelve topology points as Table~\ref{tab:topology}, using 50 distinct graph instances and a single timed run per instance (no per-graph warmup). One additional burn graph (seed \texttt{base\_seed + nr\_graphs}) is solved once per algorithm before the timed stream to warm GPU kernels without affecting the first measured graph. Table~\ref{tab:single_run} and Figure~\ref{fig:section4} summarize the results.
+
+\begin{table}[H]
+    \centering
+    \caption{Single-run stream performance across graph topologies ($N=5 \cdot 10^6$, 50 graphs, 1 run each)}
+    \label{tab:single_run}
+    \begin{tabular}{l r r r r}
+        \toprule
+        Topology & Sequential (ms) & Luby 16 threads (ms) & Improved 16 threads (ms) & GPU (ms) \\
+        \midrule
+        Uniform $c=1$  & 33.6307 & 51.2972  & 18.0322  & 23.4079  \\
+        Uniform $c=2$  & 27.2733 & 59.5553  & 19.2417  & 27.7125  \\
+        Uniform $c=5$  & 24.9203 & 88.9481  & 29.0109  & 40.8464  \\
+        Uniform $c=10$ & 33.6969 & 115.1190 & 41.2923  & 66.1874  \\
+        Uniform $c=25$ & 42.0564 & 147.8260 & 63.7174  & 153.4110 \\
+        Uniform $c=50$ & 46.8522 & 157.6770 & 79.8828  & 307.6020 \\
+        \midrule
+        SF $m=1$       & 27.2291 & 41.1324  & 17.2006  & 19.9699  \\
+        SF $m=2$       & 25.9673 & 51.6669  & 18.9681  & 26.6426  \\
+        SF $m=5$       & 26.4964 & 75.3459  & 26.7891  & 40.1723  \\
+        SF $m=10$      & 35.1857 & 106.2460 & 37.4271  & 65.2283  \\
+        SF $m=25$      & 46.8388 & 150.8270 & 60.1018  & 148.5310 \\
+        SF $m=50$      & 55.9335 & 189.7710 & 81.1011  & 301.9260 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/section4_single_run.pdf}
+    \caption{Single-run stream benchmark: one MIS computation per graph over 50 distinct instances.}
+    \label{fig:section4}
+\end{figure}
+
+Compared to the repeated-run topology benchmark (Table~\ref{tab:topology}), the single-run results show the same relative ranking among algorithms but reflect the higher variance inherent in one-shot measurements. Improved Luby remains the strongest CPU parallel choice on irregular graphs, while the GPU implementation is competitive on sparse and moderate-density instances but incurs larger overhead on very dense graphs.
+
 \section{Weighted MIS}
 
 \subsection{Problem Formulation}
