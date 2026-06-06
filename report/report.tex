@@ -102,7 +102,15 @@ The algorithm proceeds in discrete rounds, where each round consists of the foll
 
 The process repeats on the remaining induced subgraph until no active vertices remain. 
 
-\textbf{Complexity}: Theoretically, Luby's algorithm is very efficient. It has been proven that the algorithm finds a Maximal Independent Set in $O(\log n)$ rounds with high probability, where $n$ is the number of vertices. Since each round involves traversing edges, the total work is proportional to the number of edges $M$, but the "depth" of the computation is logarithmic, allowing for significant speedups on parallel hardware.
+\textbf{Complexity and Parallel Scaling}: 
+Theoretically, Luby's algorithm is highly efficient for parallel execution. Its complexity can be analyzed across three dimensions:
+\begin{itemize}
+    \item \textbf{Rounds}: The algorithm is guaranteed to terminate in $O(\log N)$ expected rounds with high probability.
+    \item \textbf{Total Work}: In each round $i$, the algorithm processes $N_i$ active vertices and $M_i$ active edges. The total work across all rounds is $O((N+M) \log N)$.
+    \item \textbf{Parallel Time}: Given $T$ threads, the execution time per round is $O(\frac{N_i + M_i}{T} + \text{span})$, where the span is dominated by the maximum degree $\Delta$ in the current induced subgraph. In the ideal case of perfect load balancing (uniform graphs), the total parallel time is approximately $O(\frac{N+M}{T} \log N)$.
+\end{itemize}
+
+However, for scale-free graphs, the presence of high-degree "hubs" creates a bottleneck where the span of a single round can be $O(\Delta_{max})$ ($\Delta_{max}$ represents the maximum degree of a vertex in the graph), leading to sub-linear speedups as $T$ increases. This theoretical constraint explains the performance plateaus observed in our benchmarks for irregular topologies.
 
 \subsubsection{OpenMP Parallelization}
 We utilized OpenMP to parallelize Luby's algorithm on multi-core CPUs, given these factors:
