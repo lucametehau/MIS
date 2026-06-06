@@ -81,6 +81,8 @@ struct ParsedExperiment {
     GraphSpec graph;
     int nr_graphs;
     int nr_runs;
+    int warmup_runs;
+    int burn_graphs;
     bool verify;
     std::vector<ParsedCase> cases;
 };
@@ -126,6 +128,8 @@ int run_from_config(const ConfigRunOptions& options) {
         exp.graph = parse_graph_spec(exp_json.at("graph"));
         exp.nr_graphs = exp_json.value("nr_graphs", root.value("nr_graphs", 10));
         exp.nr_runs = exp_json.value("nr_runs", root.value("nr_runs", 5));
+        exp.warmup_runs = exp_json.value("warmup_runs", root.value("warmup_runs", 2));
+        exp.burn_graphs = exp_json.value("burn_graphs", root.value("burn_graphs", 0));
         exp.verify = exp_json.value("verify", default_verify);
         for (const auto& c : exp_json.at("cases")) {
             exp.cases.push_back(parse_case(c));
@@ -145,7 +149,9 @@ int run_from_config(const ConfigRunOptions& options) {
             std::cout << "\n[" << exp.suite << "] " << exp.label
                       << " (n=" << exp.graph.n
                       << ", graphs=" << exp.nr_graphs
-                      << ", runs=" << exp.nr_runs << ")\n";
+                      << ", runs=" << exp.nr_runs
+                      << ", warmup=" << exp.warmup_runs
+                      << ", burn=" << exp.burn_graphs << ")\n";
             for (const auto& c : exp.cases) {
                 std::cout << "  - " << c.name << " (" << representation_string(c.repr)
                           << ", threads=" << c.algo_id.threads << ")\n";
@@ -185,6 +191,7 @@ int run_from_config(const ConfigRunOptions& options) {
             std::cout << " m0=" << exp.graph.m0 << " m=" << exp.graph.m;
         }
         std::cout << " graphs=" << exp.nr_graphs << " runs=" << exp.nr_runs
+                  << " warmup=" << exp.warmup_runs << " burn=" << exp.burn_graphs
                   << " verify=" << (exp.verify ? "yes" : "no") << "\n";
 
         bool has_csr = false;
@@ -199,6 +206,17 @@ int run_from_config(const ConfigRunOptions& options) {
                 const uint32_t seed = base_seed + static_cast<uint32_t>(graph_idx);
                 std::cout << "  Graph instance " << (graph_idx + 1) << "/"
                           << exp.nr_graphs << " (seed=" << seed << ")\n";
+                if (has_csr) {
+                    (void)get_or_build_csr(exp.graph, seed, cache_dir, true);
+                }
+                if (has_adj) {
+                    (void)get_or_build_adj(exp.graph, seed, cache_dir, true);
+                }
+            }
+            for (int burn_idx = 0; burn_idx < exp.burn_graphs; ++burn_idx) {
+                const uint32_t seed = base_seed + static_cast<uint32_t>(exp.nr_graphs + burn_idx);
+                std::cout << "  Burn graph " << (burn_idx + 1) << "/"
+                          << exp.burn_graphs << " (seed=" << seed << ")\n";
                 if (has_csr) {
                     (void)get_or_build_csr(exp.graph, seed, cache_dir, true);
                 }
@@ -226,6 +244,24 @@ int run_from_config(const ConfigRunOptions& options) {
             }
         }
 
+        std::vector<GraphCSR> csr_burn_graphs;
+        std::vector<Graph> adj_burn_graphs;
+        if (exp.burn_graphs > 0) {
+            csr_burn_graphs.reserve(exp.burn_graphs);
+            adj_burn_graphs.reserve(exp.burn_graphs);
+            for (int burn_idx = 0; burn_idx < exp.burn_graphs; ++burn_idx) {
+                const uint32_t seed = base_seed + static_cast<uint32_t>(exp.nr_graphs + burn_idx);
+                std::cout << "\n  Loading burn graph " << (burn_idx + 1) << "/"
+                          << exp.burn_graphs << " (seed=" << seed << ")\n";
+                if (has_csr) {
+                    csr_burn_graphs.push_back(get_or_build_csr(exp.graph, seed, cache_dir, false));
+                }
+                if (has_adj) {
+                    adj_burn_graphs.push_back(get_or_build_adj(exp.graph, seed, cache_dir, false));
+                }
+            }
+        }
+
         for (const auto& c : exp.cases) {
             std::cout << "\n  Running case: " << c.name << "\n";
             auto meta = make_meta_row(exp.suite, exp.label, exp.graph, c.repr, c.algo_id.threads);
@@ -233,12 +269,18 @@ int run_from_config(const ConfigRunOptions& options) {
             BenchmarkCsvRow row;
             if (c.repr == Representation::Csr) {
                 auto solver = make_csr_solver(c.algo_id);
+                const std::vector<GraphCSR>* burn_ptr =
+                    csr_burn_graphs.empty() ? nullptr : &csr_burn_graphs;
                 row = run_single_case_on_graphs(
-                    csr_graphs, solver, c.name, exp.nr_runs, exp.verify, meta);
+                    csr_graphs, solver, c.name, exp.nr_runs, exp.warmup_runs,
+                    exp.verify, meta, burn_ptr);
             } else {
                 auto solver = make_adj_solver(c.algo_id);
+                const std::vector<Graph>* burn_ptr =
+                    adj_burn_graphs.empty() ? nullptr : &adj_burn_graphs;
                 row = run_single_case_on_graphs(
-                    adj_graphs, solver, c.name, exp.nr_runs, exp.verify, meta);
+                    adj_graphs, solver, c.name, exp.nr_runs, exp.warmup_runs,
+                    exp.verify, meta, burn_ptr);
             }
 
             if (csv_out) {

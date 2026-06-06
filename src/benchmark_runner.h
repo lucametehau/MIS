@@ -58,8 +58,10 @@ BenchmarkCsvRow run_single_case_on_graphs(
     SolverFunc solver,
     const std::string& algorithm_name,
     int nr_runs,
+    int warmup_runs,
     bool verify,
-    const BenchmarkCsvRow& meta
+    const BenchmarkCsvRow& meta,
+    const std::vector<GraphT>* burn_graphs = nullptr
 ) {
     MISChecker checker;
     std::vector<double> per_graph_means;
@@ -67,18 +69,29 @@ BenchmarkCsvRow run_single_case_on_graphs(
     per_graph_means.reserve(graphs.size());
     per_graph_run_stds.reserve(graphs.size());
 
+    if (burn_graphs) {
+        for (std::size_t burn_idx = 0; burn_idx < burn_graphs->size(); ++burn_idx) {
+            const GraphT& g = (*burn_graphs)[burn_idx];
+            NodeList mis = solver(g);
+            if (verify) {
+                const auto verdict = checker.check_mis(g, mis);
+                if (verdict != "MIS correct!") {
+                    std::cerr << "CORRECTNESS FAILED: " << algorithm_name
+                              << " on burn graph #" << burn_idx
+                              << " — " << verdict << "\n";
+                }
+            }
+        }
+    }
+
     for (std::size_t graph_idx = 0; graph_idx < graphs.size(); ++graph_idx) {
         const GraphT& g = graphs[graph_idx];
         std::vector<double> times;
         times.reserve(nr_runs);
         NodeList mis;
 
-        constexpr int warmup_runs = 2;
         for (int run = 0; run < warmup_runs; run++) {
-            const auto start = std::chrono::high_resolution_clock::now();
             mis = solver(g);
-            const auto end = std::chrono::high_resolution_clock::now();
-
             if (verify) {
                 const auto verdict = checker.check_mis(g, mis);
                 if (verdict != "MIS correct!") {

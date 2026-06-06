@@ -254,7 +254,7 @@ def main() -> None:
             s4,
             args.out_dir,
             "section4_summary",
-            "§4: Head-to-head summary",
+            "§4: Single-run ($N=5\\times10^6$, 50 graphs, 16 threads)",
         )
     print("Done.")
 

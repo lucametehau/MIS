@@ -34,6 +34,8 @@ Pre-warm graph cache before long runs:
 | `verify` | Default MIS correctness check |
 | `cache_dir` | Directory for `.grph` / `.adj` cache files |
 | `nr_graphs` / `nr_runs` | Defaults; overridable per experiment |
+| `warmup_runs` | Untimed solver repeats per graph before timing (default `2`) |
+| `burn_graphs` | Extra graph(s) solved once per case before the timed stream; seeds `base_seed + nr_graphs + i` (default `0`) |
 
 ### Experiment
 
@@ -70,7 +72,7 @@ Pre-warm graph cache before long runs:
 | `section1_scaling_n.json` | §1 scaling with N |
 | `section2_thread_scaling.json` | §2 thread scaling |
 | `section3_topology.json` | §3 graph topology |
-| `section4_summary.json` | §4 head-to-head (same graphs as §3) |
+| `section4_summary.json` | §4 single-run (§3 topologies, 50 graphs, 1 run, no per-graph warmup) |
 | `smoke_test.json` | Small sanity check |
 
 ## CSV columns
