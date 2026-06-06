@@ -454,7 +454,7 @@ Key findings include:
     For $N = 5 \cdot 10^6$ and $c\leq2$, the GPU outperforms or is the same as the sequential baseline. 
     However, as density increases, GPU performance degrades linearly, with $c$, becoming nearly an order of magnitude slower than the CPU on dense graphs ($c=50$). 
     This is likely due to increased warp divergence and memory contention when processing longer adjacency lists in parallel.
-    \item \textbf{Weighted Heuristics}: The Greedy weighted MIS consistently provides higher-quality solutions (up to 38\% more total weight) than randomized sampling. Both weighted variants scale well, achieving a $\sim$2$\times$ speedup with 4 threads on modern multi-core hardware.
+    \item \textbf{Weighted Heuristics}: The Greedy weighted MIS consistently provides higher-quality solutions (up to 38\% more total weight) than randomized sampling. Both weighted variants scale well, achieving a $\sim$2x speedup with 4 threads on modern multi-core hardware, improving to $\sim$2.9x on denser graphs.
     \item \textbf{Representation}: The transition from adjacency lists to Compressed Sparse Row (CSR) is the single most important optimization, providing a 20-30\% speedup even for sequential code by improving memory contiguity.
 \end{itemize}
 
@@ -465,6 +465,7 @@ In summary, while the GPU provides speedups on extremely sparse graphs, our opti
 \begin{itemize}
     \item \textbf{Luca Metehau}: Implemented the baseline Sequential, Luby's algorithm and ported Luby's algorithm to GPU with additional optimizations.
     \item \textbf{Luca Perju}: Implemented the Graph CSR representation, improved Luby's algorithm, vibed the benchmarking framework.
+    \item \textbf{Georgy Salakhutdinov}: Implemented the weighted MIS algorithms (sequential and parallel variants of weighted greedy and weighted sampling), designed the weight distribution benchmarks, and analyzed parallelization performance across thread counts and graph densities.
 \end{itemize}
 
 \section*{Acknowledgments}
